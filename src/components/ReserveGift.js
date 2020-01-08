@@ -7,6 +7,7 @@ const ReserveGift = props => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
     const loading = useRef(false);
+    const unsubscribe = useRef(null);
     const { user } = props;
 
     useEffect(() => {
@@ -18,7 +19,7 @@ const ReserveGift = props => {
 
         loading.current = true;
 
-        db.collection("gifts").onSnapshot(snapshot => {
+        unsubscribe.current = db.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -55,6 +56,7 @@ const ReserveGift = props => {
                 }
             });
         });
+        return unsubscribe.current;
     }, [user]);
 
     return (

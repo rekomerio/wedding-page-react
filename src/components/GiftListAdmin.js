@@ -11,6 +11,7 @@ const GiftListAdmin = () => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
     const [users, setUsers] = useState([]);
+    const unsubscribe = useRef(null);
     const loading = useRef(false);
     const db = useRef(firebase.firestore());
 
@@ -21,7 +22,7 @@ const GiftListAdmin = () => {
 
         loading.current = true;
 
-        const unsubscribe = db.current.collection("gifts").onSnapshot(snapshot => {
+        unsubscribe.current = db.current.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -55,7 +56,6 @@ const GiftListAdmin = () => {
                     });
                 }
             });
-            return unsubscribe;
         });
 
         db.current
@@ -68,6 +68,7 @@ const GiftListAdmin = () => {
                 });
                 setUsers(arr);
             });
+        return unsubscribe.current;
     }, []);
 
     const deleteGift = id => () => {
