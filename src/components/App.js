@@ -14,6 +14,7 @@ import EditUser from "./EditUser";
 import ConfirmComing from "./ConfirmComing";
 import Users from "./Users";
 import Guests from "./Guests";
+import EditBlogPost from "./EditBlogPost";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -80,6 +81,10 @@ const App = () => {
                             <Route
                                 path="/blog/create"
                                 component={user.isAdmin ? CreateBlog : LoadingScreen}
+                            />
+                            <Route
+                                path="/blog/edit/:id"
+                                component={user.isAdmin ? EditBlogPost : LoadingScreen}
                             />
                             <Route
                                 path="/giftlist/create"

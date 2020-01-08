@@ -2,41 +2,84 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import EditIcon from "@material-ui/icons/Edit";
+import Fab from "@material-ui/core/Fab";
 import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
+import { Link } from "react-router-dom";
 
 const Blog = props => {
     const classes = useStyles();
-    const { title, sections, date } = props;
-    const temp = [...sections];
+    const { post } = props;
+    const temp = [...post.sections];
 
     const parsedSections = temp.map(section => {
         section.sentences = section.text.split("\n");
         return section;
     });
 
-    const getTime = () => {
-        if (date) {
-            return formatDistance(date, new Date(), { locale: fi }) + " sitten";
+    const getCreatedAt = () => {
+        if (post && post.createdAt) {
+            return (
+                <React.Fragment>
+                    <Typography variant="subtitle2">
+                        Luotu:{" "}
+                        {formatDistance(post.createdAt, new Date(), { locale: fi }) +
+                            " sitten"}
+                    </Typography>
+                </React.Fragment>
+            );
         }
         return null;
     };
+
+    const getEditedAt = () => {
+        if (post && post.editedAt) {
+            if (post.editedAt === post.createdAt) return null;
+            return (
+                <React.Fragment>
+                    <Typography variant="subtitle2">
+                        Muokattu viimeksi:
+                        {formatDistance(post.editedAt, new Date(), { locale: fi }) + " sitten"}
+                    </Typography>
+                </React.Fragment>
+            );
+        }
+        return null;
+    };
+
+    if (!post)
+        return (
+            <Paper elevation={2} className={classes.root}>
+                Nothing to show
+            </Paper>
+        );
     return (
         <Paper elevation={2} className={classes.root}>
             <header className={classes.header}>
-                <Typography variant="h4">{title || "Otsikko"}</Typography>
-                <Typography variant="subtitle2">{getTime()}</Typography>
+                {post.id ? (
+                    <Link style={{ float: "right" }} to={"/blog/edit/" + post.id}>
+                        <Fab size="small" color="primary">
+                            <EditIcon />
+                        </Fab>
+                    </Link>
+                ) : null}
+                <Typography variant="h4">{post.title || "Otsikko"}</Typography>
+                <div>{getCreatedAt()}</div>
             </header>
             <div>
                 {parsedSections.map((section, i) => (
                     <div key={i}>
+                        <Typography className={classes.text} variant="h6">
+                            {section.title}
+                        </Typography>
                         {section.sentences.map((sentence, j) =>
                             sentence ? (
-                                <Typography key={j} variant="body1">
+                                <Typography key={j} className={classes.text} variant="body1">
                                     {sentence}
                                 </Typography>
                             ) : (
-                                <br />
+                                <br key={j} />
                             )
                         )}
                         {section.image.url ? (
@@ -64,11 +107,11 @@ const Blog = props => {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        padding: theme.spacing(1),
-        maxWidth: 1000
+        maxWidth: 1000,
+        paddingBottom: theme.spacing(2)
     },
     header: {
-        marginBottom: theme.spacing(2)
+        padding: theme.spacing(2)
     },
     imageContainer: {
         marginTop: theme.spacing(1),
@@ -77,13 +120,16 @@ const useStyles = makeStyles(theme => ({
     imageCaption: {
         marginTop: theme.spacing(-1),
         padding: theme.spacing(1),
-        borderBottomLeftRadius: theme.spacing(1),
-        borderBottomRightRadius: theme.spacing(1),
+        marginBottom: theme.spacing(3),
         color: "white",
         backgroundColor: theme.palette.primary.main
     },
     image: {
         width: "100%"
+    },
+    text: {
+        paddingLeft: theme.spacing(4),
+        paddingRight: theme.spacing(4)
     }
 }));
 

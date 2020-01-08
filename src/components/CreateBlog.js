@@ -7,24 +7,33 @@ import AddIcon from "@material-ui/icons/Add";
 import Blog from "./Blog";
 import Button from "@material-ui/core/Button";
 import firebase from "../firebase";
-import fileUpload from "../fileUpload";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-const CreateBlog = () => {
+const CreateBlog = props => {
     const classes = useStyles();
     const db = firebase.firestore();
     const [isUploading, setIsUploading] = useState(false);
     const [title, setTitle] = useState("");
+    const [postId, setPostId] = useState("");
     const emptyData = {
+        title: "",
         text: "",
-        image: { file: null, isUploaded: false, url: "", text: "" }
+        image: { file: null, isUploaded: false, url: "", text: "", startUpload: false }
     };
     const [sections, setSections] = useState([emptyData]);
 
     useEffect(() => {
         document.title = "Blogin luonti";
     }, []);
+
+    useEffect(() => {
+        if (props.post) {
+            setTitle(props.post.title);
+            setSections(props.post.sections);
+            setPostId(props.post.id);
+        }
+    }, [props.post]);
 
     useEffect(() => {
         if (isUploading) {
@@ -56,31 +65,38 @@ const CreateBlog = () => {
         setSections(arr);
     };
 
-    const setImageUrl = (index, img) => {
+    const moveSectionDown = index => () => {
+        const arr = [...sections];
+        const temp = arr[index + 1];
+        arr[index + 1] = arr[index];
+        arr[index] = temp;
+
+        setSections(arr);
+    };
+
+    const moveSectionUp = index => () => {
+        const arr = [...sections];
+        const temp = arr[index - 1];
+        arr[index - 1] = arr[index];
+        arr[index] = temp;
+
+        setSections(arr);
+    };
+
+    const startUpload = index => {
         const arr = sections.map((section, i) => {
             if (i === index) {
-                section.image.url = img.url;
-                section.image.path = img.fullPath;
-                section.image.isUploaded = true;
-                section.image.file = null;
+                section.image.startUpload = true;
             }
             return section;
         });
-
         setSections(arr);
     };
 
     const sendImages = () => {
         setIsUploading(true);
         sections.forEach((section, i) => {
-            if (section.image.file) {
-                fileUpload(section.image.file, "images", Date.now())
-                    .then(image => {
-                        console.log(image);
-                        setImageUrl(i, image);
-                    })
-                    .catch(err => console.error(err));
-            }
+            startUpload(i);
         });
     };
 
@@ -88,27 +104,44 @@ const CreateBlog = () => {
         const post = {
             title: title,
             sections: sections.map(section => ({
+                title: section.title,
                 text: section.text,
                 image: {
-                    url: section.image.url || null,
-                    path: section.image.path || null,
-                    text: section.image.text || null
+                    url: section.image.url || "",
+                    path: section.image.path || "",
+                    text: section.image.text || ""
                 }
             })),
-            createdAt: Date.now()
+            editedAt: Date.now(),
+            createdAt: postId ? props.post.createdAt : Date.now()
         };
-
-        db.collection("blogs")
-            .add(post)
-            .then(docRef => {
-                console.log("Document written with ID:", docRef.id);
-                setTitle("");
-                setSections([emptyData]);
-            })
-            .catch(error => {
-                console.error("Error adding document: ", error);
-            })
-            .finally(() => setIsUploading(false));
+        // Edit post if id is coming from props
+        if (postId) {
+            db.collection("blogs")
+                .doc(postId)
+                .set(post)
+                .then(() => {
+                    console.log("Document edited with ID:", postId);
+                    setTitle("");
+                    setSections([emptyData]);
+                })
+                .catch(error => {
+                    console.error("Error adding document: ", error);
+                })
+                .finally(() => setIsUploading(false));
+        } else {
+            db.collection("blogs")
+                .add(post)
+                .then(doc => {
+                    console.log("Document written with ID:", doc.id);
+                    setTitle("");
+                    setSections([emptyData]);
+                })
+                .catch(error => {
+                    console.error("Error adding document: ", error);
+                })
+                .finally(() => setIsUploading(false));
+        }
     };
 
     return (
@@ -117,7 +150,9 @@ const CreateBlog = () => {
             <div className={classes.root}>
                 <div className={classes.flexContainer}>
                     <div className={classes.create}>
-                        <Typography variant="h6">Luo uusi postaus</Typography>
+                        <Typography variant="h6">
+                            {postId ? "Muokkaa postausta" : "Luo uusi postaus"}
+                        </Typography>
                         <TextField
                             name="title"
                             label="Blogin otsikko"
@@ -132,6 +167,10 @@ const CreateBlog = () => {
                                     value={section}
                                     onChange={editSection(i)}
                                     remove={removeSection(i)}
+                                    moveUp={i > 0 ? moveSectionUp(i) : null}
+                                    moveDown={
+                                        i < sections.length - 1 ? moveSectionDown(i) : null
+                                    }
                                 />
                             </div>
                         ))}
@@ -146,7 +185,7 @@ const CreateBlog = () => {
                     </div>
                     <div className={classes.preview}>
                         <Typography variant="h4">Esikatselu</Typography>
-                        <Blog title={title} sections={sections.slice()} />
+                        <Blog post={{ title, sections }} />
                     </div>
                 </div>
                 <Button
@@ -155,7 +194,7 @@ const CreateBlog = () => {
                     disabled={isUploading}
                     onClick={sendImages}
                 >
-                    {isUploading ? "Lähetetään kuvia..." : "Lähetä"}
+                    {postId ? "Muokkaa" : "Luo uusi"}
                 </Button>
             </div>
         </React.Fragment>
@@ -164,6 +203,8 @@ const CreateBlog = () => {
 
 const useStyles = makeStyles(theme => ({
     root: {
+        width: "90%",
+        margin: "auto",
         "& > *": {
             margin: theme.spacing(2)
         }
@@ -174,10 +215,10 @@ const useStyles = makeStyles(theme => ({
     },
     create: {
         width: "40vw",
-        margin: theme.spacing(1)
+        margin: theme.spacing(2)
     },
     createSection: {
-        margin: theme.spacing(1)
+        margin: theme.spacing(2)
     },
     preview: {
         width: "60vw",

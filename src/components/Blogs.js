@@ -10,14 +10,11 @@ const Blogs = () => {
 
     useEffect(() => {
         document.title = "Blogi";
-    }, []);
-
-    useEffect(() => {
         const db = firebase.firestore();
 
         db.collection("blogs")
             .orderBy("createdAt", "desc")
-            .limit(5)
+            .limit(10)
             .get()
             .then(querySnapshot => {
                 const arr = [];
@@ -34,11 +31,7 @@ const Blogs = () => {
             <div className={classes.blogs}>
                 {blogs.map(blog => (
                     <div key={blog.id} className={classes.blog}>
-                        <Blog
-                            title={blog.title}
-                            date={blog.createdAt}
-                            sections={blog.sections}
-                        />
+                        <Blog post={blog} />
                     </div>
                 ))}
             </div>
