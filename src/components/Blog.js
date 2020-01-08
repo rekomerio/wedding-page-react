@@ -69,7 +69,7 @@ const Blog = props => {
             </header>
             <div>
                 {parsedSections.map((section, i) => (
-                    <div key={i}>
+                    <div key={i} className={classes.section}>
                         <Typography className={classes.text} variant="h6">
                             {section.title}
                         </Typography>
@@ -113,14 +113,16 @@ const useStyles = makeStyles(theme => ({
     header: {
         padding: theme.spacing(2)
     },
+    section: {
+        marginBottom: theme.spacing(3)
+    },
     imageContainer: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1)
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3)
     },
     imageCaption: {
         marginTop: theme.spacing(-1),
         padding: theme.spacing(1),
-        marginBottom: theme.spacing(3),
         color: "white",
         backgroundColor: theme.palette.primary.main
     },
@@ -128,8 +130,8 @@ const useStyles = makeStyles(theme => ({
         width: "100%"
     },
     text: {
-        paddingLeft: theme.spacing(4),
-        paddingRight: theme.spacing(4)
+        marginLeft: theme.spacing(4),
+        marginRight: theme.spacing(4)
     }
 }));
 

@@ -27,7 +27,6 @@ const Blogs = () => {
 
     return (
         <div className={classes.root}>
-            <Typography variant="h3">Blogi</Typography>
             <div className={classes.blogs}>
                 {blogs.map(blog => (
                     <div key={blog.id} className={classes.blog}>
@@ -41,17 +40,17 @@ const Blogs = () => {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        margin: "auto",
-        width: 800,
-        ["@media (max-width:800px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        },
         "& > *": {
             margin: theme.spacing(0)
         }
     },
-    blogs: {},
+    blogs: {
+        display: "flex",
+        ["@media (max-width:800px)"]: {
+            // eslint-disable-line no-useless-computed-key
+            flexDirection: "column"
+        }
+    },
     blog: {
         margin: theme.spacing(2)
     }

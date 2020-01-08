@@ -17,6 +17,7 @@ fileUpload.js
 firebase.json
 .firebase
 .firebaserc
+api_keys.js
 
 # misc
 .DS_Store

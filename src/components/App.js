@@ -15,6 +15,7 @@ import ConfirmComing from "./ConfirmComing";
 import Users from "./Users";
 import Guests from "./Guests";
 import EditBlogPost from "./EditBlogPost";
+import Homepage from "./Homepage";
 
 const App = () => {
     const [user, setUser] = useState(null);
@@ -65,7 +66,8 @@ const App = () => {
                     ) : (
                         <>
                             <Nav links={links} />
-                            <Route exact path="/" component={Blogs} />
+                            <Route exact path="/blog" component={Blogs} />
+                            <Route exact path="/" component={Homepage} />
                             <Route path="/login">
                                 {user ? <Redirect to="/" /> : <Login />}
                             </Route>
