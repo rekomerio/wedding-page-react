@@ -32,10 +32,17 @@ const AddImage = props => {
     }, [props]);
 
     const handleImageChange = img => {
+        // If image has a path, delete from storage
+        if (props.image.path) {
+            deleteImage();
+        }
         props.onChange({
             ...props.image,
             file: img.file,
-            url: img.url
+            url: img.url,
+            path: "",
+            isUploaded: false,
+            isUploading: false
         });
     };
 
@@ -45,16 +52,24 @@ const AddImage = props => {
 
     const deleteImage = () => {
         // Delete from storage
-        if (props.image.path) {
+        const path = props.image.path;
+        if (path) {
             const storage = firebase.storage();
             const storageRef = storage.ref();
             storageRef
-                .child(props.image.path)
+                .child(path)
                 .delete()
-                .then(() => console.log("deleted", props.image.path))
+                .then(() => {
+                    console.log("deleted", path);
+                })
                 .catch(err => console.log(err.message));
         }
-        props.onChange({ ...props.image, file: null, url: "", text: "", isUploaded: false });
+        props.onChange({
+            ...props.image,
+            file: null,
+            path: "",
+            url: ""
+        });
     };
 
     const uploadImage = () => {
@@ -62,7 +77,6 @@ const AddImage = props => {
         props.onChange({ ...props.image, startUpload: false, isUploading: true });
         fileUpload(props.image.file, "images", Date.now())
             .then(image => {
-                console.log(image);
                 props.onChange({
                     ...props.image,
                     file: null,
