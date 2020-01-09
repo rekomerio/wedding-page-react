@@ -9,11 +9,12 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Tooltip from "@material-ui/core/Tooltip";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { auth } from "../firebase";
+import LoadingScreen from "./LoadingScreen";
 
 const Nav = props => {
     const classes = useStyles();
     const matches = useMediaQuery(
-        props.user.isAdmin ? "(max-width:1200px)" : "(max-width:600px)"
+        props.user.isAdmin ? "(max-width:1100px)" : "(max-width:600px)"
     );
     const [title, setTitle] = React.useState(document.title);
 
@@ -44,15 +45,12 @@ const Nav = props => {
                         </Link>
                     ))}
                     <Button style={{ color: "white" }} onClick={signOut}>
-                        {matches ? (
-                            <Tooltip title="Kirjaudu ulos">
-                                <ExitToAppIcon />
-                            </Tooltip>
-                        ) : (
-                            "Kirjaudu ulos"
-                        )}
+                        <Tooltip title="Kirjaudu ulos">
+                            <ExitToAppIcon />
+                        </Tooltip>
                     </Button>
                 </Toolbar>
+                {props.isLoading ? <LoadingScreen /> : null}
             </AppBar>
             <div className={classes.spacer}></div>
         </div>

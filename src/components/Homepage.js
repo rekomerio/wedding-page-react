@@ -1,17 +1,11 @@
 import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import EditIcon from "@material-ui/icons/Edit";
-import Fab from "@material-ui/core/Fab";
-import { formatDistance } from "date-fns";
-import { fi } from "date-fns/locale";
-import { Link } from "react-router-dom";
 import Blogs from "./Blogs";
 import GeneralInfo from "./Generalnfo";
 import Map from "./Map";
 
-const Homepage = () => {
+const Homepage = props => {
     const classes = useStyles();
 
     useEffect(() => {
@@ -29,7 +23,7 @@ const Homepage = () => {
                 <GeneralInfo />
                 <Map height={"100%"} />
             </div>
-            <Blogs />
+            <Blogs setIsLoading={props.setIsLoading} />
         </div>
     );
 };

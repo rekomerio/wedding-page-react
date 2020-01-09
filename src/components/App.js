@@ -25,6 +25,7 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
 const App = () => {
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         auth.onAuthStateChanged(usr => {
@@ -75,9 +76,11 @@ const App = () => {
                         <Route path="/" component={LoadingScreen} />
                     ) : (
                         <>
-                            <Nav user={user} links={links} />
+                            <Nav isLoading={isLoading} user={user} links={links} />
                             <Route exact path="/blog" component={Blogs} />
-                            <Route exact path="/" component={Homepage} />
+                            <Route exact path="/">
+                                <Homepage setIsLoading={setIsLoading} />
+                            </Route>
                             <Route path="/login">
                                 {user ? <Redirect to="/" /> : <Login />}
                             </Route>
