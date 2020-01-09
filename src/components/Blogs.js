@@ -13,7 +13,10 @@ const Blogs = props => {
     const db = useRef(firestore);
 
     useEffect(() => {
+        if (isLoading || blogs.length) return;
+        console.log("loading first post...");
         props.setIsLoading(true);
+        setIsLoading(true);
         db.current
             .collection("blogs")
             .orderBy("createdAt", "desc")
@@ -32,7 +35,7 @@ const Blogs = props => {
                 setIsLoading(false);
                 props.setIsLoading(false);
             });
-    }, []);
+    }, [props]);
 
     useEffect(() => {
         const user = auth.currentUser;
@@ -87,7 +90,7 @@ const Blogs = props => {
         document.addEventListener("scroll", onScroll);
 
         return () => document.removeEventListener("scroll", onScroll);
-    }, [isLoading, blogs]);
+    }, [isLoading, blogs, props]);
 
     return (
         <div className={classes.root}>

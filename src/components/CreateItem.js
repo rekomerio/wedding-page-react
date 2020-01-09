@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Fab from "@material-ui/core/Fab";
@@ -9,6 +9,12 @@ const CreateItem = props => {
     const classes = useStyles();
     const [input, setInput] = useState("");
     const [rotation, setRotation] = useState(0);
+    const isMounted = useRef(false);
+
+    useEffect(() => {
+        isMounted.current = true;
+        return () => (isMounted.current = false);
+    }, []);
 
     const incrementAngle = 90;
     const transitionDuration = 350;
@@ -22,7 +28,7 @@ const CreateItem = props => {
         props.add(input);
         setInput("");
         setRotation(deg => deg + incrementAngle);
-        setTimeout(() => setRotation(0), transitionDuration); // Set back to initial angle
+        setTimeout(() => (isMounted.current ? setRotation(0) : null), transitionDuration); // Prevent state update on umounted component
     };
 
     const handleKeyDown = e => {

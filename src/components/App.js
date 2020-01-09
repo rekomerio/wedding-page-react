@@ -77,8 +77,7 @@ const App = () => {
                     ) : (
                         <>
                             <Nav isLoading={isLoading} user={user} links={links} />
-                            <Route exact path="/blog" component={Blogs} />
-                            <Route exact path="/">
+                            <Route exact path="/" onChange={() => console.log(1)}>
                                 <Homepage setIsLoading={setIsLoading} />
                             </Route>
                             <Route path="/login">

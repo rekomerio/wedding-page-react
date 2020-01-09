@@ -19,7 +19,8 @@ const Nav = props => {
     const [title, setTitle] = React.useState(document.title);
 
     React.useEffect(() => {
-        setInterval(() => setTitle(document.title), 100);
+        const interval = setInterval(() => setTitle(document.title), 250);
+        return () => clearInterval(interval);
     }, []);
 
     const signOut = () => {
