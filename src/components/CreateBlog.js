@@ -6,20 +6,26 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import AddIcon from "@material-ui/icons/Add";
 import Blog from "./Blog";
 import Button from "@material-ui/core/Button";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const CreateBlog = props => {
     const classes = useStyles();
-    const db = firebase.firestore();
     const [isUploading, setIsUploading] = useState(false);
     const [title, setTitle] = useState("");
     const [postId, setPostId] = useState("");
     const emptyData = {
         title: "",
         text: "",
-        image: { file: null, isUploaded: false, url: "", text: "", startUpload: false }
+        image: {
+            file: null,
+            isUploaded: false,
+            isUploading: false,
+            url: "",
+            text: "",
+            startUpload: false
+        }
     };
     const [sections, setSections] = useState([emptyData]);
 
@@ -115,6 +121,7 @@ const CreateBlog = props => {
             editedAt: Date.now(),
             createdAt: postId ? props.post.createdAt : Date.now()
         };
+        const db = firestore;
         // Edit post if id is coming from props
         if (postId) {
             db.collection("blogs")

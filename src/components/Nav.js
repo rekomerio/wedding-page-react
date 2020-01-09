@@ -5,10 +5,16 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import firebase from "../firebase";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Tooltip from "@material-ui/core/Tooltip";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { auth } from "../firebase";
 
 const Nav = props => {
     const classes = useStyles();
+    const matches = useMediaQuery(
+        props.user.isAdmin ? "(max-width:1200px)" : "(max-width:600px)"
+    );
     const [title, setTitle] = React.useState(document.title);
 
     React.useEffect(() => {
@@ -16,26 +22,39 @@ const Nav = props => {
     }, []);
 
     const signOut = () => {
-        firebase.auth().signOut();
+        auth.signOut();
     };
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        {title}
+                        {props.user.isAdmin && matches ? null : title}
                     </Typography>
                     {props.links.map((link, i) => (
                         <Link key={i} to={link.path}>
-                            <Button color="inherit">{link.text}</Button>
+                            <Button color="inherit">
+                                {matches ? (
+                                    <Tooltip title={link.text}>{link.icon}</Tooltip>
+                                ) : (
+                                    link.text
+                                )}
+                            </Button>
                         </Link>
                     ))}
                     <Button style={{ color: "white" }} onClick={signOut}>
-                        Kirjaudu ulos
+                        {matches ? (
+                            <Tooltip title="Kirjaudu ulos">
+                                <ExitToAppIcon />
+                            </Tooltip>
+                        ) : (
+                            "Kirjaudu ulos"
+                        )}
                     </Button>
                 </Toolbar>
             </AppBar>
+            <div className={classes.spacer}></div>
         </div>
     );
 };
@@ -43,6 +62,12 @@ const Nav = props => {
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1
+    },
+    spacer: {
+        minHeight: 64,
+        ["@media (max-width:600px)"]: {
+            minHeight: 56
+        }
     },
     menuButton: {
         marginRight: theme.spacing(2)

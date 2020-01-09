@@ -61,7 +61,7 @@ const ReserveGiftItem = props => {
                         <span>
                             <Fab
                                 size="small"
-                                color="primary"
+                                color="secondary"
                                 onClick={reserveGift(gift.id)}
                                 disabled={isReserving || Boolean(gift.reservedBy)}
                             >
@@ -79,7 +79,7 @@ const ReserveGiftItem = props => {
                         <span>
                             <Fab
                                 size="small"
-                                color="secondary"
+                                color="primary"
                                 onClick={removeReservation(gift.id)}
                                 disabled={isReserving || !gift.reservedByUser}
                             >

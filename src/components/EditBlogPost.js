@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import { useParams } from "react-router-dom";
 import CreateBlog from "./CreateBlog";
 
@@ -11,7 +11,7 @@ const EditBlogPost = () => {
 
     useEffect(() => {
         if (!id) return;
-        const db = firebase.firestore();
+        const db = firestore;
         db.collection("blogs")
             .doc(id)
             .get()

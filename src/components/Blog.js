@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 const Blog = props => {
     const classes = useStyles();
-    const { post } = props;
+    const { post, isEditable } = props;
     const temp = [...post.sections];
 
     const parsedSections = temp.map(section => {
@@ -57,7 +57,7 @@ const Blog = props => {
     return (
         <Paper elevation={2} className={classes.root}>
             <header className={classes.header}>
-                {post.id ? (
+                {isEditable && post.id ? (
                     <Link style={{ float: "right" }} to={"/blog/edit/" + post.id}>
                         <Fab size="small" color="primary">
                             <EditIcon />

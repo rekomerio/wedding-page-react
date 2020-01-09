@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import CreateItem from "./CreateItem";
 import ConfirmOrDisagree from "./ConfirmOrDisagree";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -26,7 +26,7 @@ const EditUser = () => {
         isAllowedToConfirm: true
     });
     const [shouldSave, setShouldSave] = useState(false);
-    const db = useRef(firebase.firestore());
+    const db = useRef(firestore);
 
     useEffect(() => {
         if (id) {

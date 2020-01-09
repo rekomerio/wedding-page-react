@@ -12,8 +12,6 @@
 /build
 
 # personal
-firebase.js
-fileUpload.js
 firebase.json
 .firebase
 .firebaserc

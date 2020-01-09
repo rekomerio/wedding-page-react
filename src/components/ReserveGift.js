@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import ReserveGiftItem from "./ReserveGiftItem";
+import Typography from "@material-ui/core/Typography";
 
 const ReserveGift = props => {
     const classes = useStyles();
@@ -12,7 +13,7 @@ const ReserveGift = props => {
 
     useEffect(() => {
         document.title = "Lahjan varaus";
-        const db = firebase.firestore();
+        const db = firestore;
         if (!user || loading.current) {
             return;
         }
@@ -61,6 +62,14 @@ const ReserveGift = props => {
 
     return (
         <div className={classes.root}>
+            <Typography variant="h6">Lahjan varaus</Typography>
+            <Typography variant="body1">
+                Helpottaaksemme lahjan hankkimista, olemme tehneet lahjalistan, josta voit
+                käydä katsomassa lahjaideoita ja varaamaassa ehdotuksen itsellesi. Lahjan
+                varaaminen ei ole sitova ja tapahtuu täysin anonyymisti. Jos et ole kuitenkaan
+                varma että olet hankkimassa valitsemasi lahjan, poistathan varauksesi, jotta
+                annat mahdollisuuden lahjan varaukseen muille osallistujille.
+            </Typography>
             {gifts.map(gift => (
                 <ReserveGiftItem gift={gift} key={gift.id} />
             ))}
@@ -72,6 +81,9 @@ const useStyles = makeStyles(theme => ({
     root: {
         width: 600,
         margin: "auto",
+        ["@media (max-width:600px)"]: {
+            width: "100%"
+        },
         "& > *": {
             margin: theme.spacing(1)
         }

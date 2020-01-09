@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -13,6 +13,11 @@ import Map from "./Map";
 
 const Homepage = () => {
     const classes = useStyles();
+
+    useEffect(() => {
+        document.title = "Etusivu";
+    }, []);
+
     return (
         <div>
             <header className={classes.header}>
@@ -22,7 +27,7 @@ const Homepage = () => {
             </header>
             <div className={classes.flex}>
                 <GeneralInfo />
-                <Map />
+                <Map height={"100%"} />
             </div>
             <Blogs />
         </div>
@@ -43,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     },
     header: {
         minHeight: "60vh",
-        minWidth: "100vw",
+        width: "100%",
         backgroundImage: "url(/images/header.jpg)",
         backgroundAttachment: "fixed",
         backgroundRepeat: "no-repeat",
@@ -55,11 +60,19 @@ const useStyles = makeStyles(theme => ({
     },
     flex: {
         display: "flex",
+        height: 600,
+        margin: theme.spacing(2),
         ["@media (max-width:800px)"]: {
-            flexDirection: "column"
+            height: 1200,
+            flexDirection: "column",
+            "& > *": {
+                marginTop: theme.spacing(1),
+                marginBottom: theme.spacing(1)
+            }
         },
         "& > *": {
-            margin: theme.spacing(2)
+            marginRight: theme.spacing(1),
+            marginLeft: theme.spacing(1)
         }
     }
 }));

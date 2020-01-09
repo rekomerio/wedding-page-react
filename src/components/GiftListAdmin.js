@@ -5,7 +5,7 @@ import RemoveIcon from "@material-ui/icons/Delete";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Tooltip from "@material-ui/core/Tooltip";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 
 const GiftListAdmin = () => {
     const classes = useStyles();
@@ -13,7 +13,7 @@ const GiftListAdmin = () => {
     const [users, setUsers] = useState([]);
     const unsubscribe = useRef(null);
     const loading = useRef(false);
-    const db = useRef(firebase.firestore());
+    const db = useRef(firestore);
 
     useEffect(() => {
         if (loading.current) {

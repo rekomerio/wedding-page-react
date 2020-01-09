@@ -6,7 +6,7 @@ import Nav from "./Nav";
 import Blogs from "./Blogs";
 import CreateBlog from "./CreateBlog";
 import Login from "./Login";
-import firebase from "../firebase";
+import { auth, firestore } from "../firebase";
 import CreateGiftList from "./CreateGiftList";
 import LoadingScreen from "./LoadingScreen";
 import ReserveGift from "./ReserveGift";
@@ -16,14 +16,20 @@ import Users from "./Users";
 import Guests from "./Guests";
 import EditBlogPost from "./EditBlogPost";
 import Homepage from "./Homepage";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
+import GroupIcon from "@material-ui/icons/Group";
+import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
+import HomeIcon from "@material-ui/icons/Home";
+import PostAddIcon from "@material-ui/icons/PostAdd";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
 const App = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        firebase.auth().onAuthStateChanged(usr => {
+        auth.onAuthStateChanged(usr => {
             if (usr) {
-                const db = firebase.firestore();
+                const db = firestore;
                 db.collection("users")
                     .doc(usr.uid)
                     .get()
@@ -40,16 +46,20 @@ const App = () => {
     }, []);
 
     const links = [
-        { path: "/", text: "Etusivu" },
-        { path: "/user/confirm", text: "Ilmoittautuminen" },
-        { path: "/giftlist/reserve", text: "Lahjan varaus" }
+        { path: "/", text: "Etusivu", icon: <HomeIcon /> },
+        { path: "/user/confirm", text: "Ilmoittautuminen", icon: <PersonAddIcon /> },
+        { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> }
     ];
 
     if (user && user.isAdmin) {
-        links.push({ path: "/blog/create", text: "Uusi postaus" });
-        links.push({ path: "/giftlist/create", text: "Lahjan luonti" });
-        links.push({ path: "/guests", text: "Vieraslista" });
-        links.push({ path: "/users", text: "Käyttäjät" });
+        links.push({ path: "/blog/create", text: "Uusi postaus", icon: <PostAddIcon /> });
+        links.push({
+            path: "/giftlist/create",
+            text: "Lahjalistan hallinta",
+            icon: <CardGiftcardIcon />
+        });
+        links.push({ path: "/guests", text: "Vieraslista", icon: <GroupIcon /> });
+        links.push({ path: "/users", text: "Käyttäjät", icon: <SupervisedUserCircleIcon /> });
     }
 
     return (
@@ -65,7 +75,7 @@ const App = () => {
                         <Route path="/" component={LoadingScreen} />
                     ) : (
                         <>
-                            <Nav links={links} />
+                            <Nav user={user} links={links} />
                             <Route exact path="/blog" component={Blogs} />
                             <Route exact path="/" component={Homepage} />
                             <Route path="/login">

@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import PhotoCamera from "@material-ui/icons/AddAPhoto";
 import RemoveIcon from "@material-ui/icons/Delete";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import firebase from "../firebase";
+import { storage } from "../firebase";
 import fileUpload from "../fileUpload";
 
 const AddImage = props => {
@@ -54,7 +54,6 @@ const AddImage = props => {
         // Delete from storage
         const path = props.image.path;
         if (path) {
-            const storage = firebase.storage();
             const storageRef = storage.ref();
             storageRef
                 .child(path)

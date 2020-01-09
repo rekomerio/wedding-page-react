@@ -7,13 +7,13 @@ import SaveIcon from "@material-ui/icons/Check";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Tooltip from "@material-ui/core/Tooltip";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import GiftListAdmin from "./GiftListAdmin";
 
 const CreateGiftList = () => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
-    const db = useRef(firebase.firestore());
+    const db = useRef(firestore);
 
     useEffect(() => {
         document.title = "Lahjalistan muokkaus";

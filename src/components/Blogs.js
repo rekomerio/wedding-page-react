@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
 import Blog from "./Blog";
-import firebase from "../firebase";
+import { firestore, auth } from "../firebase";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const Blogs = () => {
     const classes = useStyles();
     const [blogs, setBlogs] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        document.title = "Blogi";
-        const db = firebase.firestore();
+        const db = firestore;
 
         db.collection("blogs")
             .orderBy("createdAt", "desc")
@@ -25,12 +24,26 @@ const Blogs = () => {
             });
     }, []);
 
+    useEffect(() => {
+        const db = firestore;
+        const user = auth.currentUser;
+        db.collection("users")
+            .doc(user.uid)
+            .get()
+            .then(doc => {
+                const data = doc.data();
+                if (data) {
+                    setIsAdmin(data.isAdmin);
+                }
+            });
+    }, []);
+
     return (
         <div className={classes.root}>
             <div className={classes.blogs}>
                 {blogs.map(blog => (
                     <div key={blog.id} className={classes.blog}>
-                        <Blog post={blog} />
+                        <Blog post={blog} isEditable={isAdmin} />
                     </div>
                 ))}
             </div>
@@ -40,17 +53,17 @@ const Blogs = () => {
 
 const useStyles = makeStyles(theme => ({
     root: {
+        margin: "auto",
+        width: 800,
+        ["@media (max-width:800px)"]: {
+            // eslint-disable-line no-useless-computed-key
+            width: "100%"
+        },
         "& > *": {
             margin: theme.spacing(0)
         }
     },
-    blogs: {
-        display: "flex",
-        ["@media (max-width:800px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            flexDirection: "column"
-        }
-    },
+    blogs: {},
     blog: {
         margin: theme.spacing(2)
     }

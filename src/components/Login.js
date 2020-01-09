@@ -4,7 +4,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Button from "@material-ui/core/Button";
 import Zoom from "@material-ui/core/Zoom";
 import Typography from "@material-ui/core/Typography";
-import firebase from "../firebase";
+import { auth } from "../firebase";
 
 const Login = () => {
     const classes = useStyles();
@@ -17,9 +17,7 @@ const Login = () => {
         setIsSubmitting(true);
         setMessage("");
 
-        firebase
-            .auth()
-            .signInWithEmailAndPassword(credentials.email, credentials.password)
+        auth.signInWithEmailAndPassword(credentials.email, credentials.password)
             .catch(error => {
                 console.log(error.message);
                 setMessage(error.message);

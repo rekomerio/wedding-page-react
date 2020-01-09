@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import firebase from "../firebase";
+import { firestore } from "../firebase";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link } from "react-router-dom";
 import Table from "@material-ui/core/Table";
@@ -24,7 +24,7 @@ const Guests = () => {
     }, []);
 
     useEffect(() => {
-        const db = firebase.firestore();
+        const db = firestore;
 
         db.collection("guests")
             .get()
