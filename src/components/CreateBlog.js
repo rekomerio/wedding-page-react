@@ -160,13 +160,25 @@ const CreateBlog = props => {
                         <Typography variant="h6">
                             {postId ? "Muokkaa postausta" : "Luo uusi postaus"}
                         </Typography>
-                        <TextField
-                            name="title"
-                            label="Blogin otsikko"
-                            value={title}
-                            onChange={changeTitle}
-                            fullWidth
-                        />
+                        <div className={classes.titleContainer}>
+                            <TextField
+                                name="title"
+                                label="Blogin otsikko"
+                                value={title}
+                                onChange={changeTitle}
+                                style={{ width: "75%" }}
+                                fullWidth
+                                required
+                            />
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                disabled={isUploading || !title}
+                                onClick={sendImages}
+                            >
+                                {postId ? "Tallenna" : "Luo uusi"}
+                            </Button>
+                        </div>
                         {sections.map((section, i) => (
                             <div key={i} className={classes.createSection}>
                                 <CreateBlogSection
@@ -195,14 +207,6 @@ const CreateBlog = props => {
                         <Blog post={{ title, sections }} />
                     </div>
                 </div>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    disabled={isUploading}
-                    onClick={sendImages}
-                >
-                    {postId ? "Muokkaa" : "Luo uusi"}
-                </Button>
             </div>
         </React.Fragment>
     );
@@ -230,6 +234,12 @@ const useStyles = makeStyles(theme => ({
     preview: {
         width: "60vw",
         marginTop: 46
+    },
+    titleContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        margin: theme.spacing(2)
     }
 }));
 
