@@ -38,7 +38,6 @@ database rules
 ![](https://raw.githubusercontent.com/rekomerio/wedding-page-react/master/screenshots/9.png)
 --
 ![](https://raw.githubusercontent.com/rekomerio/wedding-page-react/master/screenshots/6.png)
-
 --
 ![](https://raw.githubusercontent.com/rekomerio/wedding-page-react/master/screenshots/8.png)
 --
