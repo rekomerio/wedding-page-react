@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import ConfirmOrDisagree from "./ConfirmOrDisagree";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { firestore } from "../firebase";
@@ -8,14 +9,15 @@ import CreateItem from "./CreateItem";
 const ConfirmComing = props => {
     const classes = useStyles();
     const [guests, setGuests] = useState([]);
+    const { user } = props;
 
     useEffect(() => {
         document.title = "Ilmoittautuminen";
 
-        if (props.user.uid) {
+        if (user.uid) {
             const db = firestore;
             db.collection("guests")
-                .where("account", "==", props.user.uid)
+                .where("account", "==", user.uid)
                 .get()
                 .then(querySnapshot => {
                     const arr = [];
@@ -25,7 +27,7 @@ const ConfirmComing = props => {
                     setGuests(arr);
                 });
         }
-    }, []);
+    }, [user]);
 
     const confirmGuest = (i, isComing) => () => {
         const db = firestore;
@@ -48,7 +50,7 @@ const ConfirmComing = props => {
                     createdAt: Date.now(),
                     confirmedAt: Date.now(),
                     isComing: isComing,
-                    account: props.user.uid
+                    account: user.uid
                 };
                 db.collection("guests")
                     .add(avec)
@@ -93,7 +95,7 @@ const ConfirmComing = props => {
         return guests.filter(guest => guest.isAvec).length !== 0;
     };
 
-    if (!props.user.isAllowedToConfirm)
+    if (!user.isAllowedToConfirm)
         return (
             <Typography variant="h6">Ilmoittautuminen on suljettu sinun osaltasi</Typography>
         );
@@ -121,7 +123,7 @@ const ConfirmComing = props => {
                 />
             ))}
 
-            {props.user.isAvecAllowed && !userHasAvec() ? (
+            {user.isAvecAllowed && !userHasAvec() ? (
                 <>
                     <Typography variant="subtitle2">
                         Voit halutessasi tuoda myös seuralaisen
@@ -146,4 +148,7 @@ const useStyles = makeStyles(theme => ({
         }
     }
 }));
-export default ConfirmComing;
+
+const mapStateToProps = state => ({ user: state.user });
+
+export default connect(mapStateToProps)(ConfirmComing);

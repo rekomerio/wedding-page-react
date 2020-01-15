@@ -5,7 +5,7 @@ import Blogs from "./Blogs";
 import GeneralInfo from "./Generalnfo";
 import Map from "./Map";
 
-const Homepage = props => {
+const Homepage = () => {
     const classes = useStyles();
 
     useEffect(() => {
@@ -21,9 +21,9 @@ const Homepage = props => {
             </header>
             <div className={classes.flex}>
                 <GeneralInfo />
-                <Map height={"100%"} />
+                <Map />
             </div>
-            <Blogs setIsLoading={props.setIsLoading} />
+            <Blogs />
         </div>
     );
 };

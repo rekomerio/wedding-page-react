@@ -1,21 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
+import { firestore } from "../firebase";
 import Blog from "./Blog";
-import { firestore, auth } from "../firebase";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const Blogs = props => {
     const classes = useStyles();
     const [blogs, setBlogs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
     const lastDoc = useRef(null);
     const nothingToLoad = useRef(false);
     const db = useRef(firestore);
+    const { user } = props;
 
     useEffect(() => {
         if (isLoading || blogs.length) return;
         console.log("loading first post...");
-        props.setIsLoading(true);
+        props.setLoading(true);
         setIsLoading(true);
         db.current
             .collection("blogs")
@@ -33,23 +35,9 @@ const Blogs = props => {
             .catch(err => console.log(err))
             .finally(() => {
                 setIsLoading(false);
-                props.setIsLoading(false);
+                props.setLoading(false);
             });
     }, [props]);
-
-    useEffect(() => {
-        const user = auth.currentUser;
-        db.current
-            .collection("users")
-            .doc(user.uid)
-            .get()
-            .then(doc => {
-                const data = doc.data();
-                if (data) {
-                    setIsAdmin(data.isAdmin);
-                }
-            });
-    }, []);
 
     useEffect(() => {
         const onScroll = () => {
@@ -58,7 +46,7 @@ const Blogs = props => {
                     return;
                 }
                 setIsLoading(true);
-                props.setIsLoading(true);
+                props.setLoading(true);
                 console.log("Getting blog...");
                 db.current
                     .collection("blogs")
@@ -83,7 +71,7 @@ const Blogs = props => {
                     .catch(err => console.log(err))
                     .finally(() => {
                         setIsLoading(false);
-                        props.setIsLoading(false);
+                        props.setLoading(false);
                     });
             }
         };
@@ -97,7 +85,7 @@ const Blogs = props => {
             <div className={classes.blogs}>
                 {blogs.map(blog => (
                     <div key={blog.id} className={classes.blog}>
-                        <Blog post={blog} isEditable={isAdmin} />
+                        <Blog post={blog} isEditable={user.isAdmin} />
                     </div>
                 ))}
             </div>
@@ -123,4 +111,6 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default Blogs;
+const mapStateToProps = state => ({ user: state.user });
+
+export default connect(mapStateToProps, { setLoading })(Blogs);

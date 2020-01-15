@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { connect } from "react-redux";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { firestore } from "../firebase";
 import ReserveGiftItem from "./ReserveGiftItem";
@@ -90,4 +91,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default ReserveGift;
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps)(ReserveGift);

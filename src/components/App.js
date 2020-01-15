@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { setUser } from "../redux/actions";
 import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import { auth, firestore } from "../firebase";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import theme from "../Theme";
 import Nav from "./Nav";
-import Blogs from "./Blogs";
 import CreateBlog from "./CreateBlog";
 import Login from "./Login";
-import { auth, firestore } from "../firebase";
 import CreateGiftList from "./CreateGiftList";
 import LoadingScreen from "./LoadingScreen";
 import ReserveGift from "./ReserveGift";
@@ -23,9 +24,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
-const App = () => {
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+const App = props => {
+    const { user, setUser } = props;
 
     useEffect(() => {
         auth.onAuthStateChanged(usr => {
@@ -37,11 +37,11 @@ const App = () => {
                     .then(doc => {
                         const data = doc.data();
                         if (data) {
-                            setUser({ uid: usr.uid, ...data });
+                            setUser({ uid: usr.uid, ...data, isSignedIn: true });
                         }
                     });
             } else {
-                setUser(false);
+                setUser({ uid: null, isSignedIn: false });
             }
         });
     }, []);
@@ -67,31 +67,25 @@ const App = () => {
         <Router>
             <ThemeProvider theme={theme}>
                 <div className="App">
-                    {user === false ? (
+                    {user.uid === null && user.isSignedIn === null ? (
+                        <Route path="/" component={LoadingScreen} />
+                    ) : user.isSignedIn === false ? (
                         <>
                             <Route path="/" component={Login} />
                             <Route path="/welcome/:email/:password" component={Login} />
                         </>
-                    ) : user === null ? (
-                        <Route path="/" component={LoadingScreen} />
                     ) : (
                         <>
-                            <Nav isLoading={isLoading} user={user} links={links} />
-                            <Route exact path="/" onChange={() => console.log(1)}>
-                                <Homepage setIsLoading={setIsLoading} />
-                            </Route>
+                            <Nav links={links} />
                             <Route path="/login">
-                                {user ? <Redirect to="/" /> : <Login />}
+                                <Redirect to="/" />
                             </Route>
                             <Route path="/welcome/:email/:password">
                                 <Redirect to="/user/confirm" />
                             </Route>
-                            <Route path="/user/confirm">
-                                <ConfirmComing user={user} />
-                            </Route>
-                            <Route path="/giftlist/reserve">
-                                <ReserveGift user={user} />
-                            </Route>
+                            <Route exact path="/" component={Homepage} />
+                            <Route path="/user/confirm" component={ConfirmComing} />
+                            <Route path="/giftlist/reserve" component={ReserveGift} />
                             <Route
                                 path="/blog/create"
                                 component={user.isAdmin ? CreateBlog : LoadingScreen}
@@ -124,4 +118,6 @@ const App = () => {
     );
 };
 
-export default App;
+const mapStateToProps = state => ({ user: state.user });
+
+export default connect(mapStateToProps, { setUser })(App);

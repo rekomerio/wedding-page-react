@@ -28,7 +28,7 @@ const Login = () => {
     useEffect(() => {
         document.title = "Kirjautuminen";
         const params = window.location.hash.split("/");
-        const [a, b, email, password] = params;
+        const [, , email, password] = params;
         if (email && password) {
             setCredentials({ email, password });
         }

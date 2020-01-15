@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import { auth } from "../firebase";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -8,7 +10,6 @@ import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Tooltip from "@material-ui/core/Tooltip";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { auth } from "../firebase";
 import LoadingScreen from "./LoadingScreen";
 
 const Nav = props => {
@@ -16,6 +17,7 @@ const Nav = props => {
     const matches = useMediaQuery(
         props.user.isAdmin ? "(max-width:1100px)" : "(max-width:600px)"
     );
+
     const [title, setTitle] = React.useState(document.title);
 
     React.useEffect(() => {
@@ -76,4 +78,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default Nav;
+const mapStateToProps = state => ({
+    isLoading: state.loadingState.isLoading,
+    user: state.user
+});
+
+export default connect(mapStateToProps)(Nav);
