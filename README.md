@@ -1,7 +1,5 @@
 # wedding-page-react
-Web app for managing weddings. I'm doing this project for my sisters wedding and it is not yet finished.
-
-I wanted to add some screenshots of the current progress to show it to potential recruiters, because I'm trying to find internship for the summer.
+Web app for managing weddings. I'm doing this project for my sisters wedding and it is not yet finished, but I wanted to add some screenshots of the current progress to show it to potential recruiters.
 
 ### Main functionality
  * Owner can write and edit blogs
@@ -13,6 +11,7 @@ I wanted to add some screenshots of the current progress to show it to potential
 
 ### Stack
  * React
+   * Redux (for handling user and loading state)
    * Material-UI
    * React router
    * Firebase
