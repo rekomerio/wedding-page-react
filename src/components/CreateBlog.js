@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
 import CreateBlogSection from "./CreateBlogSection";
 import Fab from "@material-ui/core/Fab";
 import TextField from "@material-ui/core/TextField";
@@ -40,6 +42,10 @@ const CreateBlog = props => {
             setPostId(props.post.id);
         }
     }, [props.post]);
+
+    useEffect(() => {
+        props.setLoading(isUploading);
+    }, [isUploading]);
 
     useEffect(() => {
         if (isUploading) {
@@ -101,6 +107,7 @@ const CreateBlog = props => {
 
     const sendImages = () => {
         setIsUploading(true);
+
         sections.forEach((section, i) => {
             startUpload(i);
         });
@@ -243,4 +250,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default CreateBlog;
+export default connect(null, { setLoading })(CreateBlog);

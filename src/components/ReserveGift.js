@@ -71,9 +71,11 @@ const ReserveGift = props => {
                 varma että olet hankkimassa valitsemasi lahjan, poistathan varauksesi, jotta
                 annat mahdollisuuden lahjan varaukseen muille osallistujille.
             </Typography>
-            {gifts.map(gift => (
-                <ReserveGiftItem gift={gift} key={gift.id} />
-            ))}
+            {gifts.length ? (
+                gifts.map(gift => <ReserveGiftItem gift={gift} key={gift.id} />)
+            ) : (
+                <Typography variant="h6">Lahjalista on tyhjä</Typography>
+            )}
         </div>
     );
 };

@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
 import { firestore } from "../firebase";
 import CreateItem from "./CreateItem";
 import ConfirmOrDisagree from "./ConfirmOrDisagree";
@@ -14,7 +16,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { useParams } from "react-router-dom";
 
-const EditUser = () => {
+const EditUser = props => {
     const classes = useStyles();
     const { id } = useParams();
     const [userName, setUserName] = useState("");
@@ -30,6 +32,8 @@ const EditUser = () => {
 
     useEffect(() => {
         if (id) {
+            props.setLoading(true);
+
             db.current
                 .collection("users")
                 .doc(id)
@@ -37,6 +41,7 @@ const EditUser = () => {
                 .then(doc => {
                     const userData = doc.data();
                     if (!userData) {
+                        props.setLoading(false);
                         return;
                     }
                     setUser(userData);
@@ -63,8 +68,11 @@ const EditUser = () => {
                                     });
                             });
                             setFamilyMembers(arr);
-                        });
-                });
+                        })
+                        .catch(err => console.log(err))
+                        .finally(() => props.setLoading(false));
+                })
+                .catch(err => console.log(err));
         }
     }, []);
 
@@ -278,4 +286,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default EditUser;
+export default connect(null, { setLoading })(EditUser);

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
 import { firestore } from "../firebase";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link } from "react-router-dom";
@@ -14,7 +16,7 @@ import Fab from "@material-ui/core/Fab";
 import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
 
-const Users = () => {
+const Users = props => {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
 
@@ -25,6 +27,7 @@ const Users = () => {
     useEffect(() => {
         const db = firestore;
 
+        props.setLoading(true);
         db.collection("users")
             .get()
             .then(querySnapshot => {
@@ -33,7 +36,9 @@ const Users = () => {
                     arr.push({ ...doc.data(), id: doc.id });
                 });
                 setUsers(arr);
-            });
+            })
+            .catch(err => console.error(err))
+            .finally(() => props.setLoading(false));
     }, []);
 
     return (
@@ -116,4 +121,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default Users;
+export default connect(null, { setLoading })(Users);

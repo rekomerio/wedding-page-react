@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { setLoading } from "../redux/actions";
 import { firestore } from "../firebase";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Link } from "react-router-dom";
@@ -15,7 +17,7 @@ import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
 import { Typography } from "@material-ui/core";
 
-const Guests = () => {
+const Guests = props => {
     const classes = useStyles();
     const [guests, setGuests] = useState([]);
 
@@ -26,6 +28,7 @@ const Guests = () => {
     useEffect(() => {
         const db = firestore;
 
+        props.setLoading(true);
         db.collection("guests")
             .get()
             .then(querySnapshot => {
@@ -34,7 +37,9 @@ const Guests = () => {
                     arr.push({ ...doc.data(), id: doc.id });
                 });
                 setGuests(arr);
-            });
+            })
+            .catch(err => console.error(err))
+            .finally(() => props.setLoading(false));
     }, []);
 
     const guestCount = guests.length;
@@ -137,4 +142,4 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default Guests;
+export default connect(null, { setLoading })(Guests);
