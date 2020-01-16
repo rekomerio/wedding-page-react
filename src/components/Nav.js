@@ -14,7 +14,7 @@ import LoadingScreen from "./LoadingScreen";
 
 const Nav = props => {
     const classes = useStyles();
-    const matches = useMediaQuery(
+    const isMobileDevice = useMediaQuery(
         props.user.isAdmin ? "(max-width:1100px)" : "(max-width:600px)"
     );
 
@@ -34,12 +34,12 @@ const Nav = props => {
             <AppBar position="fixed">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        {props.user.isAdmin && matches ? null : title}
+                        {props.user.isAdmin && isMobileDevice ? null : title}
                     </Typography>
                     {props.links.map((link, i) => (
                         <Link key={i} to={link.path}>
                             <Button color="inherit">
-                                {matches ? (
+                                {isMobileDevice ? (
                                     <Tooltip title={link.text}>{link.icon}</Tooltip>
                                 ) : (
                                     link.text
