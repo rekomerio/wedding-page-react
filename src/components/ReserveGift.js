@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { firestore } from "../firebase";
@@ -8,20 +8,16 @@ import Typography from "@material-ui/core/Typography";
 const ReserveGift = props => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
-    const loading = useRef(false);
-    const unsubscribe = useRef(null);
     const { user } = props;
 
     useEffect(() => {
         document.title = "Lahjan varaus";
         const db = firestore;
-        if (!user || loading.current) {
+        if (!user) {
             return;
         }
 
-        loading.current = true;
-
-        unsubscribe.current = db.collection("gifts").onSnapshot(snapshot => {
+        const unsubscribe = db.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -58,7 +54,7 @@ const ReserveGift = props => {
                 }
             });
         });
-        return unsubscribe.current;
+        return unsubscribe;
     }, [user]);
 
     return (

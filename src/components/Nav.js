@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { auth } from "../firebase";
 import AppBar from "@material-ui/core/AppBar";
@@ -14,16 +14,16 @@ import LoadingScreen from "./LoadingScreen";
 
 const Nav = props => {
     const classes = useStyles();
+    const location = useLocation();
     const isMobileDevice = useMediaQuery(
         props.user.isAdmin ? "(max-width:1100px)" : "(max-width:600px)"
     );
 
-    const [title, setTitle] = React.useState(document.title);
+    const [title, setTitle] = useState(document.title);
 
-    React.useEffect(() => {
-        const interval = setInterval(() => setTitle(document.title), 250);
-        return () => clearInterval(interval);
-    }, []);
+    useEffect(() => {
+        setTimeout(() => setTitle(document.title), 50);
+    }, [location]);
 
     const signOut = () => {
         auth.signOut();

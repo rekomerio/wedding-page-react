@@ -10,19 +10,10 @@ import { firestore } from "../firebase";
 const GiftListAdmin = () => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
-    const [users, setUsers] = useState([]);
-    const unsubscribe = useRef(null);
-    const loading = useRef(false);
     const db = useRef(firestore);
 
     useEffect(() => {
-        if (loading.current) {
-            return;
-        }
-
-        loading.current = true;
-
-        unsubscribe.current = db.current.collection("gifts").onSnapshot(snapshot => {
+        const unsubscribe = db.current.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -58,17 +49,7 @@ const GiftListAdmin = () => {
             });
         });
 
-        db.current
-            .collection("users")
-            .get()
-            .then(querySnapshot => {
-                const arr = [];
-                querySnapshot.forEach(doc => {
-                    arr.push({ ...doc.data(), id: doc.id });
-                });
-                setUsers(arr);
-            });
-        return unsubscribe.current;
+        return unsubscribe;
     }, []);
 
     const deleteGift = id => () => {
@@ -83,12 +64,6 @@ const GiftListAdmin = () => {
                 console.log("deleted");
             })
             .catch(err => console.log(err.message));
-    };
-
-    const getUserEmail = id => {
-        const user = users.find(user => user.id === id);
-        if (user) return user.email;
-        return null;
     };
 
     return (

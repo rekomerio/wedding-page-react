@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -11,7 +11,12 @@ import { functions } from "../firebase";
 const ReserveGiftItem = props => {
     const classes = useStyles();
     const [isReserving, setIsReserving] = useState(false);
+    const isMounted = useRef(true);
     const { gift } = props;
+
+    useEffect(() => {
+        return () => (isMounted.current = false);
+    }, []);
 
     const reserveGift = id => () => {
         const reserve = functions.httpsCallable("reserveGift");
@@ -21,7 +26,9 @@ const ReserveGiftItem = props => {
         reserve({ giftId: id })
             .then(res => console.log(res))
             .catch(err => console.log(err))
-            .finally(() => setIsReserving(false));
+            .finally(() => {
+                if (isMounted.current) setIsReserving(false);
+            });
     };
 
     const removeReservation = id => () => {
@@ -32,7 +39,9 @@ const ReserveGiftItem = props => {
         unReserve({ giftId: id })
             .then(res => console.log(res))
             .catch(err => console.log(err))
-            .finally(() => setIsReserving(false));
+            .finally(() => {
+                if (isMounted.current) setIsReserving(false);
+            });
     };
 
     return (
