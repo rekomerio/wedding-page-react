@@ -36,6 +36,7 @@ const Guests = props => {
                 querySnapshot.forEach(doc => {
                     arr.push({ ...doc.data(), id: doc.id });
                 });
+                arr.sort((a, b) => b.confirmedAt - a.confirmedAt);
                 setGuests(arr);
             })
             .catch(err => console.error(err))
@@ -45,7 +46,7 @@ const Guests = props => {
     const guestCount = guests.length;
     const comingGuests = guests.filter(guest => guest.isComing).length;
     const notComingGuests = guests.filter(guest => guest.isComing === false).length;
-    const unConfirmedGuests = guests.filter(guest => guest.isComing === null).length;
+    const unconfirmedGuests = guests.filter(guest => guest.isComing === null).length;
 
     return (
         <div>
@@ -57,7 +58,7 @@ const Guests = props => {
                 Ei tulossa {notComingGuests} / {guestCount}
             </Typography>
             <Typography variant="subtitle2">
-                Vahvistamatta {unConfirmedGuests} / {guestCount}
+                Vahvistamatta {unconfirmedGuests} / {guestCount}
             </Typography>
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
@@ -65,8 +66,8 @@ const Guests = props => {
                         <TableRow>
                             <TableCell align="left">Nro</TableCell>
                             <TableCell align="left">Muokkaus</TableCell>
-                            <TableCell align="left">Nimi</TableCell>
                             <TableCell align="left">Id</TableCell>
+                            <TableCell align="left">Nimi</TableCell>
                             <TableCell align="left">Tulossa</TableCell>
                             <TableCell align="left">Vieraan tyyppi</TableCell>
                             <TableCell align="left">Viimeisin ilmoittautuminen</TableCell>
@@ -89,12 +90,11 @@ const Guests = props => {
                                         </Fab>
                                     </Link>
                                 </TableCell>
-
-                                <TableCell component="th" scope="row">
-                                    {guest.name}
-                                </TableCell>
                                 <TableCell component="th" scope="row">
                                     {guest.id.slice(0, 10) + "..."}
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                    {guest.name}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
                                     {guest.isComing === null

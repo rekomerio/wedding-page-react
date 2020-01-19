@@ -34,6 +34,7 @@ const Users = props => {
                 const arr = [];
                 querySnapshot.forEach(doc => {
                     arr.push({ ...doc.data(), id: doc.id });
+                    arr.sort((a, b) => a.createdAt - b.createdAt);
                 });
                 setUsers(arr);
             })

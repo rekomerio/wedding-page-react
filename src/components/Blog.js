@@ -11,11 +11,11 @@ import { Link } from "react-router-dom";
 const Blog = props => {
     const classes = useStyles();
     const { post, isEditable } = props;
-    const temp = [...post.sections];
 
-    const parsedSections = temp.map(section => {
-        section.sentences = section.text.split("\n");
-        return section;
+    const parsedSections = post.sections.map(section => {
+        const sectionCopy = { ...section };
+        sectionCopy.sentences = sectionCopy.text.split("\n");
+        return sectionCopy;
     });
 
     const getCreatedAt = () => {

@@ -29,6 +29,7 @@ const CreateBlog = props => {
             startUpload: false
         }
     };
+
     const [sections, setSections] = useState([emptyData]);
 
     useEffect(() => {
@@ -55,6 +56,7 @@ const CreateBlog = props => {
                 submitPost();
             }
         }
+        console.log(sections);
     }, [sections, isUploading]);
 
     const changeTitle = e => {

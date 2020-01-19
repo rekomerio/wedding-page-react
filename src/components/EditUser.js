@@ -31,6 +31,8 @@ const EditUser = props => {
     const db = useRef(firestore);
 
     useEffect(() => {
+        document.title = "Käyttäjän muokkaus";
+
         if (id) {
             props.setLoading(true);
 
@@ -161,7 +163,6 @@ const EditUser = props => {
     };
 
     const handleCheckBoxChange = event => {
-        console.log(event.target.name, event.target.checked);
         setCheckBox({ ...checkBox, [event.target.name]: event.target.checked });
     };
 
