@@ -36,7 +36,7 @@ const ConfirmOrDisagree = props => {
                     <Typography variant="body1">{text}</Typography>
                 </div>
                 <div className={classes.buttons}>
-                    <Tooltip title={confirmText}>
+                    <Tooltip title={confirmText || "Kyllä"}>
                         <span>
                             <Fab
                                 size="small"
@@ -48,7 +48,7 @@ const ConfirmOrDisagree = props => {
                             </Fab>
                         </span>
                     </Tooltip>
-                    <Tooltip title={disagreeText}>
+                    <Tooltip title={disagreeText || "Ei"}>
                         <span>
                             <Fab
                                 size="small"

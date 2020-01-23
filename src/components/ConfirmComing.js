@@ -15,8 +15,8 @@ const ConfirmComing = props => {
         document.title = "Ilmoittautuminen";
 
         if (user.uid) {
-            const db = firestore;
-            db.collection("guests")
+            firestore
+                .collection("guests")
                 .where("account", "==", user.uid)
                 .get()
                 .then(querySnapshot => {
@@ -30,11 +30,11 @@ const ConfirmComing = props => {
     }, [user]);
 
     const confirmGuest = (i, isComing) => () => {
-        const db = firestore;
         const guest = guests[i];
         // Guest has id so modify the guest
         if (guest.id) {
-            db.collection("guests")
+            firestore
+                .collection("guests")
                 .doc(guest.id)
                 .set({ isComing: isComing, confirmedAt: Date.now() }, { merge: true })
                 .then(() => {
@@ -52,7 +52,8 @@ const ConfirmComing = props => {
                     isComing: isComing,
                     account: user.uid
                 };
-                db.collection("guests")
+                firestore
+                    .collection("guests")
                     .add(avec)
                     .then(res => {
                         console.log("confirmed");
@@ -137,11 +138,7 @@ const ConfirmComing = props => {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width: 600,
-        ["@media (max-width:600px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        },
+        maxWidth: 600,
         margin: "auto",
         "& > *": {
             margin: theme.spacing(1)

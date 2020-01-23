@@ -26,10 +26,10 @@ const Guests = props => {
     }, []);
 
     useEffect(() => {
-        const db = firestore;
-
         props.setLoading(true);
-        db.collection("guests")
+
+        firestore
+            .collection("guests")
             .get()
             .then(querySnapshot => {
                 const arr = [];

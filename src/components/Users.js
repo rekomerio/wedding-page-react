@@ -25,10 +25,10 @@ const Users = props => {
     }, []);
 
     useEffect(() => {
-        const db = firestore;
-
         props.setLoading(true);
-        db.collection("users")
+
+        firestore
+            .collection("users")
             .get()
             .then(querySnapshot => {
                 const arr = [];

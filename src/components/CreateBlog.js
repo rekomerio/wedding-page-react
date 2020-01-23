@@ -56,7 +56,6 @@ const CreateBlog = props => {
                 submitPost();
             }
         }
-        console.log(sections);
     }, [sections, isUploading]);
 
     const changeTitle = e => {
@@ -130,10 +129,10 @@ const CreateBlog = props => {
             editedAt: Date.now(),
             createdAt: postId ? props.post.createdAt : Date.now()
         };
-        const db = firestore;
         // Edit post if id is coming from props
         if (postId) {
-            db.collection("blogs")
+            firestore
+                .collection("blogs")
                 .doc(postId)
                 .set(post)
                 .then(() => {
@@ -146,7 +145,8 @@ const CreateBlog = props => {
                 })
                 .finally(() => setIsUploading(false));
         } else {
-            db.collection("blogs")
+            firestore
+                .collection("blogs")
                 .add(post)
                 .then(doc => {
                     console.log("Document written with ID:", doc.id);

@@ -23,6 +23,7 @@ import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import HomeIcon from "@material-ui/icons/Home";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import WishSong from "./WishSong";
 
 const App = props => {
     const { user, setUser } = props;
@@ -30,8 +31,8 @@ const App = props => {
     useEffect(() => {
         auth.onAuthStateChanged(usr => {
             if (usr) {
-                const db = firestore;
-                db.collection("users")
+                firestore
+                    .collection("users")
                     .doc(usr.uid)
                     .get()
                     .then(doc => {
@@ -49,7 +50,8 @@ const App = props => {
     const links = [
         { path: "/", text: "Etusivu", icon: <HomeIcon /> },
         { path: "/user/confirm", text: "Ilmoittautuminen", icon: <PersonAddIcon /> },
-        { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> }
+        { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> },
+        { path: "/songs/wish", text: "Toivo kappaletta", icon: <CardGiftcardIcon /> }
     ];
 
     if (user && user.isAdmin) {
@@ -86,6 +88,7 @@ const App = props => {
                             <Route exact path="/" component={Homepage} />
                             <Route path="/user/confirm" component={ConfirmComing} />
                             <Route path="/giftlist/reserve" component={ReserveGift} />
+                            <Route path="/songs/wish" component={WishSong} />
                             <Route
                                 path="/blog/create"
                                 component={user.isAdmin ? CreateBlog : LoadingScreen}

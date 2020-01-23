@@ -11,7 +11,6 @@ const Blogs = props => {
     const [isLoading, setIsLoading] = useState(false);
     const lastDoc = useRef(null);
     const nothingToLoad = useRef(false);
-    const db = useRef(firestore);
     const { user } = props;
 
     useEffect(() => {
@@ -19,7 +18,7 @@ const Blogs = props => {
         console.log("loading first post...");
         props.setLoading(true);
         setIsLoading(true);
-        db.current
+        firestore
             .collection("blogs")
             .orderBy("createdAt", "desc")
             .limit(1)
@@ -48,7 +47,7 @@ const Blogs = props => {
                 setIsLoading(true);
                 props.setLoading(true);
                 console.log("Getting blog...");
-                db.current
+                firestore
                     .collection("blogs")
                     .orderBy("createdAt", "desc")
                     .startAfter(lastDoc.current.data().createdAt)
@@ -96,11 +95,7 @@ const Blogs = props => {
 const useStyles = makeStyles(theme => ({
     root: {
         margin: "auto",
-        width: 800,
-        ["@media (max-width:800px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        },
+        maxWidth: 800,
         "& > *": {
             margin: theme.spacing(0)
         }

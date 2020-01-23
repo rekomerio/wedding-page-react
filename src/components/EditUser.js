@@ -28,7 +28,6 @@ const EditUser = props => {
         isAllowedToConfirm: true
     });
     const [shouldSave, setShouldSave] = useState(false);
-    const db = useRef(firestore);
 
     useEffect(() => {
         document.title = "Käyttäjän muokkaus";
@@ -36,7 +35,7 @@ const EditUser = props => {
         if (id) {
             props.setLoading(true);
 
-            db.current
+            firestore
                 .collection("users")
                 .doc(id)
                 .get()
@@ -54,7 +53,7 @@ const EditUser = props => {
                     });
                     setUserName(userData.name);
                     // Get potential family members
-                    db.current
+                    firestore
                         .collection("guests")
                         .where("account", "==", id)
                         .get()
@@ -76,7 +75,7 @@ const EditUser = props => {
                 })
                 .catch(err => console.log(err));
         }
-    }, []);
+    }, [id, props]);
 
     useEffect(() => {
         setShouldSave(
@@ -93,7 +92,7 @@ const EditUser = props => {
         }
 
         modifyFamilyMember(index, { isSaving: true });
-        db.current
+        firestore
             .collection("guests")
             .add({
                 account: id,
@@ -125,7 +124,7 @@ const EditUser = props => {
             name: userName
         };
 
-        db.current
+        firestore
             .collection("users")
             .doc(id)
             .set(data, { merge: true })
@@ -137,7 +136,7 @@ const EditUser = props => {
     };
 
     const deleteFamilyMember = (id, index) => () => {
-        db.current
+        firestore
             .collection("guests")
             .doc(id)
             .delete()

@@ -13,7 +13,6 @@ import GiftListAdmin from "./GiftListAdmin";
 const CreateGiftList = () => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
-    const db = useRef(firestore);
 
     useEffect(() => {
         document.title = "Lahjalistan muokkaus";
@@ -28,7 +27,7 @@ const CreateGiftList = () => {
     };
 
     const saveGift = index => () => {
-        db.current
+        firestore
             .collection("gifts")
             .add({
                 name: gifts[index],
@@ -81,12 +80,8 @@ const CreateGiftList = () => {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width: 600,
+        maxWidth: 600,
         margin: "auto",
-        ["@media (max-width:600px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        },
         "& > *": {
             margin: theme.spacing(1)
         }

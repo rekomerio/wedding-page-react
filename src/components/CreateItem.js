@@ -25,7 +25,7 @@ const CreateItem = props => {
     };
 
     const addItem = () => {
-        props.add(input);
+        props.add && props.add(input);
         setInput("");
         setRotation(deg => deg + incrementAngle);
         setTimeout(() => (isMounted.current ? setRotation(0) : null), transitionDuration); // Prevent state update on umounted component

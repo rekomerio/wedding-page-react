@@ -11,10 +11,10 @@ const EditBlogPost = props => {
 
     useEffect(() => {
         if (!id) return;
-        const db = firestore;
 
         props.setLoading(true);
-        db.collection("blogs")
+        firestore
+            .collection("blogs")
             .doc(id)
             .get()
             .then(doc => {

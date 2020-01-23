@@ -10,10 +10,9 @@ import { firestore } from "../firebase";
 const GiftListAdmin = () => {
     const classes = useStyles();
     const [gifts, setGifts] = useState([]);
-    const db = useRef(firestore);
 
     useEffect(() => {
-        const unsubscribe = db.current.collection("gifts").onSnapshot(snapshot => {
+        const unsubscribe = firestore.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -56,7 +55,7 @@ const GiftListAdmin = () => {
         if (!window.confirm("Oletko varma, että haluat poistaa tämän lahjan?")) {
             return;
         }
-        db.current
+        firestore
             .collection("gifts")
             .doc(id)
             .delete()

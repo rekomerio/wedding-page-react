@@ -12,12 +12,11 @@ const ReserveGift = props => {
 
     useEffect(() => {
         document.title = "Lahjan varaus";
-        const db = firestore;
         if (!user) {
             return;
         }
 
-        const unsubscribe = db.collection("gifts").onSnapshot(snapshot => {
+        const unsubscribe = firestore.collection("gifts").onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
                 const data = change.doc.data();
                 if (change.type === "added") {
@@ -32,7 +31,6 @@ const ReserveGift = props => {
                         ];
                     });
                 }
-
                 if (change.type === "modified") {
                     setGifts(prev => {
                         return prev.map(gift => {
@@ -78,11 +76,8 @@ const ReserveGift = props => {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        width: 600,
+        maxWidth: 600,
         margin: "auto",
-        ["@media (max-width:600px)"]: {
-            width: "100%"
-        },
         "& > *": {
             margin: theme.spacing(1)
         }
