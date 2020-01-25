@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import RemoveIcon from "@material-ui/icons/Delete";

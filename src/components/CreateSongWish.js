@@ -28,7 +28,7 @@ const CreateSongWish = props => {
         props.onAdd && props.onAdd(input);
         setInput({ name: "", artist: "" });
         setRotation(deg => deg + incrementAngle);
-        setTimeout(() => (isMounted.current ? setRotation(0) : null), transitionDuration); // Prevent state update on umounted component
+        setTimeout(() => isMounted.current && setRotation(0), transitionDuration); // Prevent state update on umounted component
     };
 
     const handleKeyDown = e => {
@@ -58,23 +58,25 @@ const CreateSongWish = props => {
                 type="text"
                 fullWidth
             />
-            <span>
-                <Fab
-                    className={classes.rotate}
-                    style={{
-                        transition:
-                            rotation === 0 ? "none" : `transform ${transitionDuration}ms`,
-                        transform: `rotate(${rotation}deg)`
-                    }}
-                    color="primary"
-                    aria-label="add"
-                    size="small"
-                    onClick={addItem}
-                    disabled={disabled}
-                >
-                    <AddIcon />
-                </Fab>
-            </span>
+            <Tooltip title={`Lisää ${input.name} - ${input.artist}`}>
+                <span>
+                    <Fab
+                        className={classes.rotate}
+                        style={{
+                            transition:
+                                rotation === 0 ? "none" : `transform ${transitionDuration}ms`,
+                            transform: `rotate(${rotation}deg)`
+                        }}
+                        color="primary"
+                        aria-label="add"
+                        size="small"
+                        onClick={addItem}
+                        disabled={disabled}
+                    >
+                        <AddIcon />
+                    </Fab>
+                </span>
+            </Tooltip>
         </div>
     );
 };

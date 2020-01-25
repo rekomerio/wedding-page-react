@@ -28,7 +28,7 @@ const CreateItem = props => {
         props.add && props.add(input);
         setInput("");
         setRotation(deg => deg + incrementAngle);
-        setTimeout(() => (isMounted.current ? setRotation(0) : null), transitionDuration); // Prevent state update on umounted component
+        setTimeout(() => isMounted.current && setRotation(0), transitionDuration); // Prevent state update on umounted component
     };
 
     const handleKeyDown = e => {
@@ -39,50 +39,39 @@ const CreateItem = props => {
 
     return (
         <div className={classes.root}>
-            <div className={classes.flexContainer}>
-                <TextField
-                    label={props.label}
-                    value={input}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    type="text"
-                    fullWidth
-                />
-                <Tooltip title={"Lisää " + input}>
-                    <span>
-                        <Fab
-                            className={classes.rotate}
-                            style={{
-                                transition:
-                                    rotation === 0
-                                        ? "none"
-                                        : `transform ${transitionDuration}ms`,
-                                transform: `rotate(${rotation}deg)`
-                            }}
-                            color="primary"
-                            aria-label="add"
-                            size="small"
-                            onClick={addItem}
-                            disabled={disabled}
-                        >
-                            <AddIcon />
-                        </Fab>
-                    </span>
-                </Tooltip>
-            </div>
-            <div className={classes.child}>{props.children}</div>
+            <TextField
+                label={props.label}
+                value={input}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                type="text"
+                fullWidth
+            />
+            <Tooltip title={"Lisää " + input}>
+                <span>
+                    <Fab
+                        className={classes.rotate}
+                        style={{
+                            transition:
+                                rotation === 0 ? "none" : `transform ${transitionDuration}ms`,
+                            transform: `rotate(${rotation}deg)`
+                        }}
+                        color="primary"
+                        aria-label="add"
+                        size="small"
+                        onClick={addItem}
+                        disabled={disabled}
+                    >
+                        <AddIcon />
+                    </Fab>
+                </span>
+            </Tooltip>
         </div>
     );
 };
 
 const useStyles = makeStyles(theme => ({
-    root: {},
-    flexContainer: {
-        display: "flex",
-        alignItems: "center"
-    },
-    child: {},
-    rotate: {}
+    root: { display: "flex", alignItems: "center" }
 }));
 
 export default CreateItem;

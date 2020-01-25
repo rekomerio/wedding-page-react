@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CreateItem from "./CreateItem";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";

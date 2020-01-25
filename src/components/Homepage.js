@@ -29,17 +29,7 @@ const Homepage = () => {
 };
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        margin: "auto",
-        width: 800,
-        ["@media (max-width:800px)"]: {
-            // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        },
-        "& > *": {
-            margin: theme.spacing(0)
-        }
-    },
+    root: {},
     header: {
         minHeight: "60vh",
         width: "100%",

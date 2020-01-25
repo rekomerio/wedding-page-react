@@ -6,6 +6,7 @@ import SaveIcon from "@material-ui/icons/Check";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Tooltip from "@material-ui/core/Tooltip";
+import propTypes from "prop-types";
 
 const ConfirmOrDisagree = props => {
     const classes = useStyles();
@@ -36,7 +37,7 @@ const ConfirmOrDisagree = props => {
                     <Typography variant="body1">{text}</Typography>
                 </div>
                 <div className={classes.buttons}>
-                    <Tooltip title={confirmText || "Kyllä"}>
+                    <Tooltip title={confirmText}>
                         <span>
                             <Fab
                                 size="small"
@@ -48,7 +49,7 @@ const ConfirmOrDisagree = props => {
                             </Fab>
                         </span>
                     </Tooltip>
-                    <Tooltip title={disagreeText || "Ei"}>
+                    <Tooltip title={disagreeText}>
                         <span>
                             <Fab
                                 size="small"
@@ -86,5 +87,25 @@ const useStyles = makeStyles(theme => ({
         }
     }
 }));
+
+ConfirmOrDisagree.propTypes = {
+    onConfirm: propTypes.func,
+    onDisagree: propTypes.func,
+    disagreeText: propTypes.string,
+    confirmText: propTypes.string,
+    label: propTypes.string,
+    text: propTypes.string,
+    confirmDisabled: propTypes.bool,
+    disagreeDisabled: propTypes.bool
+};
+
+ConfirmOrDisagree.defaultProps = {
+    disagreeText: "Ei",
+    confirmText: "Kyllä",
+    label: "",
+    text: "",
+    confirmDisabled: false,
+    disagreeDisabled: false
+};
 
 export default ConfirmOrDisagree;
