@@ -123,15 +123,14 @@ const ConfirmComing = props => {
                     onDisagree={confirmGuest(i, false)}
                 />
             ))}
-
-            {user.isAvecAllowed && !userHasAvec() ? (
+            {user.isAvecAllowed && !userHasAvec() && (
                 <>
                     <Typography variant="subtitle2">
                         Voit halutessasi tuoda myös seuralaisen
                     </Typography>
                     <CreateItem label="Henkilön nimi" add={createAvec} />
                 </>
-            ) : null}
+            )}
         </div>
     );
 };

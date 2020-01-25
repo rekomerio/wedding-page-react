@@ -12,6 +12,10 @@ const WishSong = ({ user, setLoading }) => {
     const [songs, setSongs] = useState([]);
 
     useEffect(() => {
+        document.title = "Toivo kappaletta";
+    }, []);
+
+    useEffect(() => {
         const unsubscribe = firestore
             .collection("songs")
             .where("addedBy", "==", user.uid)

@@ -57,13 +57,13 @@ const Blog = props => {
     return (
         <Paper elevation={2} className={classes.root}>
             <header className={classes.header}>
-                {isEditable && post.id ? (
+                {isEditable && post.id && (
                     <Link style={{ float: "right" }} to={"/blog/edit/" + post.id}>
                         <Fab size="small" color="primary">
                             <EditIcon />
                         </Fab>
                     </Link>
-                ) : null}
+                )}
                 <Typography variant="h4">{post.title || "Otsikko"}</Typography>
                 <div>{getCreatedAt()}</div>
             </header>
@@ -82,22 +82,22 @@ const Blog = props => {
                                 <br key={j} />
                             )
                         )}
-                        {section.image.url ? (
+                        {section.image.url && (
                             <div className={classes.imageContainer}>
                                 <img
                                     className={classes.image}
                                     alt={section.image.text}
                                     src={section.image.url}
                                 />
-                                {section.image.text ? (
+                                {section.image.text && (
                                     <div className={classes.imageCaption}>
                                         <Typography variant="caption">
                                             {section.image.text}
                                         </Typography>
                                     </div>
-                                ) : null}
+                                )}
                             </div>
-                        ) : null}
+                        )}
                     </div>
                 ))}
             </div>

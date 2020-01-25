@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { auth } from "../firebase";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Tooltip from "@material-ui/core/Tooltip";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LoadingScreen from "./LoadingScreen";
+import Drawer from "./Drawer";
+import MenuIcon from "@material-ui/icons/Menu";
+import IconButton from "@material-ui/core/IconButton";
 
 const Nav = props => {
     const classes = useStyles();
     const location = useLocation();
-    const isMobileDevice = useMediaQuery(
-        props.user.isAdmin ? "(max-width:1100px)" : "(max-width:600px)"
-    );
-
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [title, setTitle] = useState(document.title);
 
     useEffect(() => {
@@ -33,29 +32,28 @@ const Nav = props => {
         <div className={classes.root}>
             <AppBar position="fixed">
                 <Toolbar>
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={() => setIsDrawerOpen(state => !state)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        {props.user.isAdmin && isMobileDevice ? null : title}
+                        {title}
                     </Typography>
-                    {props.links.map((link, i) => (
-                        <Link key={i} to={link.path}>
-                            <Button color="inherit">
-                                {isMobileDevice ? (
-                                    <Tooltip title={link.text}>{link.icon}</Tooltip>
-                                ) : (
-                                    link.text
-                                )}
-                            </Button>
-                        </Link>
-                    ))}
                     <Button style={{ color: "white" }} onClick={signOut}>
                         <Tooltip title="Kirjaudu ulos">
                             <ExitToAppIcon />
                         </Tooltip>
                     </Button>
                 </Toolbar>
-                {props.isLoading ? <LoadingScreen /> : null}
+                {props.isLoading && <LoadingScreen />}
             </AppBar>
             <div className={classes.spacer}></div>
+            <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen} />
         </div>
     );
 };

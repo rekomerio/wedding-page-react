@@ -49,7 +49,8 @@ const useStyles = makeStyles(theme => ({
         ["@media (max-width:800px)"]: {
             height: 1200,
             flexDirection: "column",
-            "& > *": {
+            "&& > *": {
+                margin: 0,
                 marginTop: theme.spacing(1),
                 marginBottom: theme.spacing(1)
             }

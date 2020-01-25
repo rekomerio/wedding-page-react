@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { setUser } from "../redux/actions";
-import { HashRouter as Router, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { auth, firestore } from "../firebase";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import theme from "../Theme";
@@ -17,13 +17,8 @@ import Users from "./Users";
 import Guests from "./Guests";
 import EditBlogPost from "./EditBlogPost";
 import Homepage from "./Homepage";
-import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
-import GroupIcon from "@material-ui/icons/Group";
-import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
-import HomeIcon from "@material-ui/icons/Home";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import WishSong from "./WishSong";
+import Songs from "./Songs";
 
 const App = props => {
     const { user, setUser } = props;
@@ -38,7 +33,12 @@ const App = props => {
                     .then(doc => {
                         const data = doc.data();
                         if (data) {
-                            setUser({ uid: usr.uid, ...data, isSignedIn: true });
+                            setUser({
+                                uid: usr.uid,
+                                ...data,
+                                isSignedIn: true,
+                                isAdmin: false
+                            });
                         }
                     });
             } else {
@@ -46,24 +46,6 @@ const App = props => {
             }
         });
     }, []);
-
-    const links = [
-        { path: "/", text: "Etusivu", icon: <HomeIcon /> },
-        { path: "/user/confirm", text: "Ilmoittautuminen", icon: <PersonAddIcon /> },
-        { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> },
-        { path: "/songs/wish", text: "Toivo kappaletta", icon: <CardGiftcardIcon /> }
-    ];
-
-    if (user && user.isAdmin) {
-        links.push({ path: "/blog/create", text: "Uusi postaus", icon: <PostAddIcon /> });
-        links.push({
-            path: "/giftlist/create",
-            text: "Lahjalistan hallinta",
-            icon: <CardGiftcardIcon />
-        });
-        links.push({ path: "/guests", text: "Vieraslista", icon: <GroupIcon /> });
-        links.push({ path: "/users", text: "Käyttäjät", icon: <SupervisedUserCircleIcon /> });
-    }
 
     return (
         <Router>
@@ -78,41 +60,47 @@ const App = props => {
                         </>
                     ) : (
                         <>
-                            <Nav links={links} />
-                            <Route path="/login">
-                                <Redirect to="/" />
-                            </Route>
-                            <Route path="/welcome/:email/:password">
-                                <Redirect to="/user/confirm" />
-                            </Route>
-                            <Route exact path="/" component={Homepage} />
-                            <Route path="/user/confirm" component={ConfirmComing} />
-                            <Route path="/giftlist/reserve" component={ReserveGift} />
-                            <Route path="/songs/wish" component={WishSong} />
-                            <Route
-                                path="/blog/create"
-                                component={user.isAdmin ? CreateBlog : LoadingScreen}
-                            />
-                            <Route
-                                path="/blog/edit/:id"
-                                component={user.isAdmin ? EditBlogPost : LoadingScreen}
-                            />
-                            <Route
-                                path="/giftlist/create"
-                                component={user.isAdmin ? CreateGiftList : LoadingScreen}
-                            />
-                            <Route
-                                path="/user/:id/edit"
-                                component={user.isAdmin ? EditUser : LoadingScreen}
-                            />
-                            <Route
-                                path="/users"
-                                component={user.isAdmin ? Users : LoadingScreen}
-                            />
-                            <Route
-                                path="/guests"
-                                component={user.isAdmin ? Guests : LoadingScreen}
-                            />
+                            <Nav />
+                            <Switch>
+                                <Route path="/login">
+                                    <Redirect to="/" />
+                                </Route>
+                                <Route path="/welcome/:email/:password">
+                                    <Redirect to="/user/confirm" />
+                                </Route>
+                                <Route exact path="/" component={Homepage} />
+                                <Route path="/user/confirm" component={ConfirmComing} />
+                                <Route path="/giftlist/reserve" component={ReserveGift} />
+                                <Route path="/songs/wish" component={WishSong} />
+                                <Route
+                                    path="/songs/all"
+                                    component={user.isAdmin ? Songs : LoadingScreen}
+                                />
+                                <Route
+                                    path="/blog/create"
+                                    component={user.isAdmin ? CreateBlog : LoadingScreen}
+                                />
+                                <Route
+                                    path="/blog/edit/:id"
+                                    component={user.isAdmin ? EditBlogPost : LoadingScreen}
+                                />
+                                <Route
+                                    path="/giftlist/create"
+                                    component={user.isAdmin ? CreateGiftList : LoadingScreen}
+                                />
+                                <Route
+                                    path="/user/:id/edit"
+                                    component={user.isAdmin ? EditUser : LoadingScreen}
+                                />
+                                <Route
+                                    path="/users"
+                                    component={user.isAdmin ? Users : LoadingScreen}
+                                />
+                                <Route
+                                    path="/guests"
+                                    component={user.isAdmin ? Guests : LoadingScreen}
+                                />
+                            </Switch>
                         </>
                     )}
                 </div>
