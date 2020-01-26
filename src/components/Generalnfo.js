@@ -8,23 +8,20 @@ const GeneralInfo = () => {
     return (
         <Paper elevation={2} className={classes.root}>
             <div className={classes.content}>
-                <Typography variant="h4">Info</Typography>
-                <Typography variant="h6">Tapahtuma on....</Typography>
-                <Typography variant="subtitle2">Ajankohta: </Typography>
-                <Typography variant="subtitle2">Osoite: </Typography>
+                <Typography variant="h4">Varaa päivä!</Typography>
+                <img className={classes.logo} src="/images/logo.png" />
                 <Typography variant="body1">
-                    Tapahtumaan ilmoittautumisen voi suorittaa täällä. Ilmoittautumista voi
-                    muuttaa vielä jälkikäteen, mutta huomioithan, että ilmoittautuminen
-                    sulkeutuu viimeistään xx.xx...
+                    Loppukesä kruunataan tänä vuonna erityisen ihanalla tavalla!
                 </Typography>
+                <br />
                 <Typography variant="body1">
-                    Helpottaaksemme lahjan hankkimista, olemme tehneet lahjalistan, josta voit
-                    käydä katsomassa lahjaideoita ja varaamaassa ehdotuksen itsellesi. Lahjan
-                    varaaminen ei ole sitova ja tapahtuu täysin anonyymisti. Jos et ole
-                    kuitenkaan varma että olet hankkimassa valitsemasi lahjan, poistathan
-                    varauksesi, jotta annat mahdollisuuden lahjan varaukseen muille
-                    osallistujille.
+                    Kutsumme teidät viettämään kanssamme rakkauden täyteistä hääjuhlaa
+                    Jyväskylän Tikkalaan ja varaamaan kalenteristanne elokuun ensimmäisen
+                    päivän.
                 </Typography>
+                <Typography variant="body1">Lisätietoa myöhemmin!</Typography>
+                <br />
+                <Typography variant="body1">Parhain terveisin Tuomas ja Vilma</Typography>
             </div>
         </Paper>
     );
@@ -32,7 +29,13 @@ const GeneralInfo = () => {
 
 const useStyles = makeStyles(theme => ({
     root: { width: "100%", height: "100%" },
-    content: { margin: theme.spacing(2) }
+    content: { margin: theme.spacing(2), textAlign: "center" },
+    logo: {
+        width: "70%",
+        maxWidth: 360,
+        margin: theme.spacing(-4),
+        marginTop: theme.spacing(1)
+    }
 }));
 
 export default GeneralInfo;

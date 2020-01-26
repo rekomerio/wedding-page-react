@@ -8,7 +8,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import QueueMusicIcon from "@material-ui/icons/QueueMusic";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
@@ -17,6 +16,7 @@ import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import HomeIcon from "@material-ui/icons/Home";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import FastfoodIcon from "@material-ui/icons/Fastfood";
 
 const Drawer = props => {
     const classes = useStyles();
@@ -34,7 +34,8 @@ const Drawer = props => {
         { path: "/giftlist/create", text: "Lahjalistan hallinta", icon: <CardGiftcardIcon /> },
         { path: "/guests", text: "Vieraslista", icon: <GroupIcon /> },
         { path: "/users", text: "Käyttäjät", icon: <SupervisedUserCircleIcon /> },
-        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> }
+        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> },
+        { path: "/intolerances", text: "Erikoisruokavaliot", icon: <FastfoodIcon /> }
     ];
 
     return (

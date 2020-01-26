@@ -19,6 +19,9 @@ import EditBlogPost from "./EditBlogPost";
 import Homepage from "./Homepage";
 import WishSong from "./WishSong";
 import Songs from "./Songs";
+import AuthorizedRoute from "./AuthorizedRoute";
+import NotFound from "./NotFound";
+import FoodIntoleranceList from "./FoodIntoleranceList";
 
 const App = props => {
     const { user, setUser } = props;
@@ -36,8 +39,7 @@ const App = props => {
                             setUser({
                                 uid: usr.uid,
                                 ...data,
-                                isSignedIn: true,
-                                isAdmin: false
+                                isSignedIn: true
                             });
                         }
                     });
@@ -72,34 +74,49 @@ const App = props => {
                                 <Route path="/user/confirm" component={ConfirmComing} />
                                 <Route path="/giftlist/reserve" component={ReserveGift} />
                                 <Route path="/songs/wish" component={WishSong} />
-                                <Route
+                                <AuthorizedRoute
                                     path="/songs/all"
-                                    component={user.isAdmin ? Songs : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={Songs}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/blog/create"
-                                    component={user.isAdmin ? CreateBlog : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={CreateBlog}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/blog/edit/:id"
-                                    component={user.isAdmin ? EditBlogPost : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={EditBlogPost}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/giftlist/create"
-                                    component={user.isAdmin ? CreateGiftList : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={CreateGiftList}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/user/:id/edit"
-                                    component={user.isAdmin ? EditUser : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={EditUser}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/users"
-                                    component={user.isAdmin ? Users : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={Users}
                                 />
-                                <Route
+                                <AuthorizedRoute
                                     path="/guests"
-                                    component={user.isAdmin ? Guests : LoadingScreen}
+                                    authorized={user.isAdmin}
+                                    component={Guests}
                                 />
+                                <AuthorizedRoute
+                                    path="/intolerances"
+                                    authorized={user.isAdmin}
+                                    component={FoodIntoleranceList}
+                                />
+                                <Route>
+                                    <NotFound />
+                                </Route>
                             </Switch>
                         </>
                     )}

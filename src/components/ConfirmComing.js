@@ -5,6 +5,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { firestore } from "../firebase";
 import Typography from "@material-ui/core/Typography";
 import CreateItem from "./CreateItem";
+import CreateNote from "./CreateNote";
 
 const ConfirmComing = props => {
     const classes = useStyles();
@@ -109,7 +110,6 @@ const ConfirmComing = props => {
                 vielä jälkikäteen, mutta huomioithan, että ilmoittautuminen sulkeutuu
                 viimeistään xx.xx...
             </Typography>
-
             {guests.map((member, i) => (
                 <ConfirmOrDisagree
                     key={i}
@@ -131,6 +131,10 @@ const ConfirmComing = props => {
                     <CreateItem label="Henkilön nimi" add={createAvec} />
                 </>
             )}
+            <Typography variant="subtitle2">
+                Kirjoita alla olevaan kenttään mahdolliset erikoisruokavaliot
+            </Typography>
+            <CreateNote label="Erikoisruokavalio" collection="intolerances" />
         </div>
     );
 };
