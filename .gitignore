@@ -18,7 +18,6 @@ firebase.json
 api_keys.js
 images/
 icons/
-src/components/Generalnfo.js
 
 # misc
 .DS_Store
@@ -30,4 +29,3 @@ src/components/Generalnfo.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
