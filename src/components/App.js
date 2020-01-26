@@ -21,7 +21,6 @@ import WishSong from "./WishSong";
 import Songs from "./Songs";
 import AuthorizedRoute from "./AuthorizedRoute";
 import NotFound from "./NotFound";
-import FoodIntoleranceList from "./FoodIntoleranceList";
 
 const App = props => {
     const { user, setUser } = props;
@@ -108,11 +107,6 @@ const App = props => {
                                     path="/guests"
                                     authorized={user.isAdmin}
                                     component={Guests}
-                                />
-                                <AuthorizedRoute
-                                    path="/intolerances"
-                                    authorized={user.isAdmin}
-                                    component={FoodIntoleranceList}
                                 />
                                 <Route>
                                     <NotFound />

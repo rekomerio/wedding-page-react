@@ -34,8 +34,7 @@ const Drawer = props => {
         { path: "/giftlist/create", text: "Lahjalistan hallinta", icon: <CardGiftcardIcon /> },
         { path: "/guests", text: "Vieraslista", icon: <GroupIcon /> },
         { path: "/users", text: "Käyttäjät", icon: <SupervisedUserCircleIcon /> },
-        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> },
-        { path: "/intolerances", text: "Erikoisruokavaliot", icon: <FastfoodIcon /> }
+        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> }
     ];
 
     return (

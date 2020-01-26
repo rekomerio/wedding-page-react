@@ -12,13 +12,20 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import EditIcon from "@material-ui/icons/Edit";
+import CommentIcon from "@material-ui/icons/Comment";
 import Fab from "@material-ui/core/Fab";
 import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
+import Dialog from "./Dialog";
+import Typography from "@material-ui/core/Typography";
 
 const Users = props => {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
+
+    const [intolerances, setIntolerances] = useState([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogContent, setDialogContent] = useState({});
 
     useEffect(() => {
         document.title = "Käyttäjät";
@@ -42,6 +49,36 @@ const Users = props => {
             .finally(() => props.setLoading(false));
     }, []);
 
+    useEffect(() => {
+        firestore
+            .collection("intolerances")
+            .get()
+            .then(querySnapshot => {
+                const arr = [];
+                querySnapshot.forEach(doc => {
+                    arr.push({ ...doc.data(), id: doc.id });
+                });
+                setIntolerances(arr);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    const userHasFoodIntolerances = userId =>
+        intolerances.find(intolerance => intolerance.createdBy === userId);
+
+    const showIntolerances = userId => () => {
+        const intolerance = intolerances.find(intolerance => intolerance.createdBy === userId);
+        if (!intolerance) return;
+        const userEmail = users.find(user => user.id === userId).email;
+        const render = intolerance.text.split("\n").map((text, i) => (
+            <Typography key={i} variant="body1">
+                {text}
+            </Typography>
+        ));
+        setDialogContent({ title: userEmail, render });
+        setIsDialogOpen(true);
+    };
+
     return (
         <div>
             <TableContainer component={Paper}>
@@ -50,6 +87,7 @@ const Users = props => {
                         <TableRow>
                             <TableCell align="left">Nro</TableCell>
                             <TableCell align="left">Muokkaus</TableCell>
+                            <TableCell align="left">Ruokatoiveet</TableCell>
                             <TableCell align="left">Email</TableCell>
                             <TableCell align="left">Nimi</TableCell>
                             <TableCell align="left">Id</TableCell>
@@ -75,6 +113,16 @@ const Users = props => {
                                             <EditIcon />
                                         </Fab>
                                     </Link>
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                    <Fab
+                                        size="small"
+                                        color="secondary"
+                                        onClick={showIntolerances(user.id)}
+                                        disabled={!userHasFoodIntolerances(user.id)}
+                                    >
+                                        <CommentIcon />
+                                    </Fab>
                                 </TableCell>
                                 <TableCell component="th" scope="row">
                                     {user.email}
@@ -108,6 +156,9 @@ const Users = props => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Dialog setOpen={setIsDialogOpen} open={isDialogOpen} title={dialogContent.title}>
+                {dialogContent.render}
+            </Dialog>
         </div>
     );
 };
