@@ -64,7 +64,7 @@ const Users = props => {
     }, []);
 
     const userHasFoodIntolerances = userId =>
-        intolerances.find(intolerance => intolerance.createdBy === userId);
+        Boolean(intolerances.find(intolerance => intolerance.createdBy === userId));
 
     const showIntolerances = userId => () => {
         const intolerance = intolerances.find(intolerance => intolerance.createdBy === userId);
