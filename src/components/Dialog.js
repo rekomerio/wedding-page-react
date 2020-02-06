@@ -6,6 +6,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const styles = theme => ({
     root: {
@@ -46,6 +47,7 @@ const DialogContent = withStyles(theme => ({
 }))(MuiDialogContent);
 
 export default function CustomizedDialogs(props) {
+    const classes = useStyles();
     const handleClose = () => {
         props.setOpen(false);
     };
@@ -55,6 +57,7 @@ export default function CustomizedDialogs(props) {
             onClose={handleClose}
             aria-labelledby="customized-dialog-title"
             open={props.open}
+            classes={{ paper: classes.paper }}
         >
             <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                 {props.title}
@@ -63,3 +66,9 @@ export default function CustomizedDialogs(props) {
         </Dialog>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    paper: {
+        maxWidth: "90vw"
+    }
+}));

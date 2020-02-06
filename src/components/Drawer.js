@@ -16,7 +16,7 @@ import CardGiftcardIcon from "@material-ui/icons/CardGiftcard";
 import HomeIcon from "@material-ui/icons/Home";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import FastfoodIcon from "@material-ui/icons/Fastfood";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
 const Drawer = props => {
     const classes = useStyles();
@@ -24,6 +24,7 @@ const Drawer = props => {
 
     const links = [
         { path: "/", text: "Etusivu", icon: <HomeIcon /> },
+        { path: "/blog", text: "Blogi", icon: <LibraryBooksIcon /> },
         { path: "/user/confirm", text: "Ilmoittautuminen", icon: <PersonAddIcon /> },
         { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> },
         { path: "/songs/wish", text: "Toivo kappaletta", icon: <MusicNoteIcon /> }

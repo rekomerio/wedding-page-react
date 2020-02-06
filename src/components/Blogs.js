@@ -14,6 +14,10 @@ const Blogs = props => {
     const { user } = props;
 
     useEffect(() => {
+        document.title = "Blogi";
+    }, []);
+
+    useEffect(() => {
         if (isLoading || blogs.length) return;
         console.log("loading first post...");
         props.setLoading(true);

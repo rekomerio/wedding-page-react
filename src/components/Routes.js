@@ -14,6 +14,7 @@ import WishSong from "./WishSong";
 import Songs from "./Songs";
 import AuthorizedRoute from "./AuthorizedRoute";
 import NotFound from "./NotFound";
+import Blogs from "./Blogs";
 
 const Routes = ({ user }) => (
     <Switch>
@@ -21,6 +22,7 @@ const Routes = ({ user }) => (
             <Redirect to="/user/confirm" />
         </Route>
         <Route exact path="/" component={Homepage} />
+        <Route exact path="/blog" component={Blogs} />
         <Route path="/user/confirm" component={ConfirmComing} />
         <Route path="/giftlist/reserve" component={ReserveGift} />
         <Route path="/songs/wish" component={WishSong} />
