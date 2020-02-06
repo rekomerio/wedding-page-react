@@ -4,6 +4,10 @@ import { setUser } from "../redux/actions";
 import { HashRouter as Router } from "react-router-dom";
 import { auth, firestore } from "../firebase";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { fi } from "date-fns/locale";
+import { SnackbarProvider } from "notistack";
 import theme from "../Theme";
 import Nav from "./Nav";
 import Login from "./Login";
@@ -34,16 +38,20 @@ const App = props => {
 
     return (
         <ThemeProvider theme={theme}>
-            {user.uid === null && user.isSignedIn === null ? (
-                <LoadingScreen />
-            ) : user.isSignedIn === false ? (
-                <Login />
-            ) : (
-                <Router>
-                    <Nav />
-                    <Routes />
-                </Router>
-            )}
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={fi}>
+                <SnackbarProvider maxSnack={5} preventDuplicate autoHideDuration={3000}>
+                    {user.uid === null && user.isSignedIn === null ? (
+                        <LoadingScreen />
+                    ) : user.isSignedIn === false ? (
+                        <Login />
+                    ) : (
+                        <Router>
+                            <Nav />
+                            <Routes />
+                        </Router>
+                    )}
+                </SnackbarProvider>
+            </MuiPickersUtilsProvider>
         </ThemeProvider>
     );
 };
