@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { firestore } from "../firebase";
 
 const CreateNote = props => {
+    const { enqueueSnackbar } = useSnackbar();
     const { user } = props;
     const [note, setNote] = useState({ text: "" });
     const [originalNote, setOriginalNote] = useState({ text: "" });
@@ -49,9 +51,11 @@ const CreateNote = props => {
             .collection(props.collection)
             .add({ text: note.text, createdBy: user.uid, createdAt: Date.now() })
             .then(res => {
-                console.log("Created", res.id);
                 setNote(state => ({ ...state, id: res.id }));
                 setOriginalNote({ text: note.text });
+                enqueueSnackbar(`${props.label} tallennettu`, {
+                    variant: "info"
+                });
             })
             .catch(err => console.error(err.message));
     };
@@ -62,8 +66,10 @@ const CreateNote = props => {
             .doc(note.id)
             .set({ text: note.text }, { merge: true })
             .then(() => {
-                console.log("Saved", note.id);
                 setOriginalNote({ text: note.text });
+                enqueueSnackbar(`${props.label} tallennettu`, {
+                    variant: "info"
+                });
             })
             .catch(err => console.error(err.message));
     };
@@ -76,7 +82,9 @@ const CreateNote = props => {
             .then(() => {
                 setNote({ text: "", id: null });
                 setOriginalNote({ text: "" });
-                console.log("deleted", note.id);
+                enqueueSnackbar(`${props.label} tallennettu`, {
+                    variant: "info"
+                });
             })
             .catch(err => console.error(err.message));
     };
