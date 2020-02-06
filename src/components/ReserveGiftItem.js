@@ -7,9 +7,11 @@ import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Tooltip from "@material-ui/core/Tooltip";
 import { functions } from "../firebase";
+import { useSnackbar } from "notistack";
 
 const ReserveGiftItem = props => {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const [isReserving, setIsReserving] = useState(false);
     const isMounted = useRef(true);
     const { gift } = props;
@@ -24,7 +26,19 @@ const ReserveGiftItem = props => {
         setIsReserving(true);
 
         reserve({ giftId: id })
-            .then(res => console.log(res))
+            .then(res => {
+                console.log(res);
+                const { message } = res.data;
+                if (message.toLowerCase() === "ok") {
+                    enqueueSnackbar(`${gift.name} varattu sinulle`, {
+                        variant: "success"
+                    });
+                } else {
+                    enqueueSnackbar(message, {
+                        variant: "info"
+                    });
+                }
+            })
             .catch(err => console.log(err))
             .finally(() => {
                 if (isMounted.current) setIsReserving(false);
@@ -37,7 +51,12 @@ const ReserveGiftItem = props => {
         setIsReserving(true);
 
         unReserve({ giftId: id })
-            .then(res => console.log(res))
+            .then(res => {
+                console.log(res);
+                enqueueSnackbar(`${gift.name} varaus poistettu`, {
+                    variant: "info"
+                });
+            })
             .catch(err => console.log(err))
             .finally(() => {
                 if (isMounted.current) setIsReserving(false);
@@ -58,7 +77,7 @@ const ReserveGiftItem = props => {
                 </div>
                 <div className={classes.buttons}>
                     <Typography variant="caption">
-                        {isReserving ? "Vahvistetaan, odota hetki..." : ""}
+                        {isReserving ? "Vahvistetaan..." : ""}
                     </Typography>
                     <Tooltip
                         title={

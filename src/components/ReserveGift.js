@@ -58,12 +58,21 @@ const ReserveGift = props => {
     return (
         <div className={classes.root}>
             <Typography variant="h6">Lahjan varaus</Typography>
-            <Typography variant="body1">
-                Helpottaaksemme lahjan hankkimista, olemme tehneet lahjalistan, josta voit
-                käydä katsomassa lahjaideoita ja varaamaassa ehdotuksen itsellesi. Lahjan
-                varaaminen ei ole sitova ja tapahtuu täysin anonyymisti. Jos et ole kuitenkaan
-                varma että olet hankkimassa valitsemasi lahjan, poistathan varauksesi, jotta
-                annat mahdollisuuden lahjan varaukseen muille osallistujille.
+            <Typography variant="body1" paragraph>
+                Rakennamme tällä hetkellä yhteistä tulevaisuutta, ja on monia pieniä palasia,
+                joita tarvitaan vielä kokonaisuuden aikaan saamiseksi. Lisäksi olemme
+                suuntaamassa häämatkalle piakkoin häiden jälkeen.
+            </Typography>
+            <Typography variant="body1" paragraph>
+                Jos mielessäsi on jokin uusi tai käytetty tavara, jonka uskot ilahduttavan
+                meitä, otamme tällaisen lahjan ilomielin vastaan.
+            </Typography>
+            <Typography variant="body1" paragraph>
+                Olemme lisäksi tehneet lahjalistan meille tuiki tarpeellisista tavaroista.
+                Lahjalistasta voit varata haluamasi tavaran.
+            </Typography>
+            <Typography variant="body1" paragraph>
+                Jos haluat antaa meille lahjaksi rahaa, yhteinen tilinumeromme on 35838838585
             </Typography>
             {gifts.length ? (
                 gifts.map(gift => <ReserveGiftItem gift={gift} key={gift.id} />)

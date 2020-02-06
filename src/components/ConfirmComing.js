@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
 import ConfirmOrDisagree from "./ConfirmOrDisagree";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { firestore } from "../firebase";
@@ -9,6 +10,7 @@ import CreateNote from "./CreateNote";
 
 const ConfirmComing = props => {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
     const [guests, setGuests] = useState([]);
     const { user } = props;
 
@@ -39,8 +41,11 @@ const ConfirmComing = props => {
                 .doc(guest.id)
                 .set({ isComing: isComing, confirmedAt: Date.now() }, { merge: true })
                 .then(() => {
-                    console.log("confirmed");
                     modifyGuest(i, { isComing });
+                    const statusMsg = isComing ? "osallistuvaksi" : "ei osallistuvaksi";
+                    enqueueSnackbar(`${guest.name} ilmoitettu ${statusMsg}`, {
+                        variant: isComing ? "success" : "info"
+                    });
                 })
                 .catch(err => console.log(err));
         } else {
@@ -57,8 +62,10 @@ const ConfirmComing = props => {
                     .collection("guests")
                     .add(avec)
                     .then(res => {
-                        console.log("confirmed");
                         modifyGuest(i, { isComing, id: res.id });
+                        enqueueSnackbar(`${guest.name} ilmoitettu osallistuvaksi`, {
+                            variant: isComing ? "success" : "info"
+                        });
                     })
                     .catch(err => console.log(err));
             } else {
@@ -106,9 +113,10 @@ const ConfirmComing = props => {
         <div className={classes.root}>
             <Typography variant="h6">Häihin ilmoittautuminen</Typography>
             <Typography variant="body1">
-                Tapahtumaan ilmoittautumisen voi suorittaa täällä. Ilmoittautumista voi muuttaa
-                vielä jälkikäteen, mutta huomioithan, että ilmoittautuminen sulkeutuu
-                viimeistään xx.xx...
+                Ilmoittautuminen on nyt auki, ja ilmoittautumisstatusta voi muuttaa 30.6.2020
+                asti. Ilmoittautumisstatuksen lisäksi pyydämme ilmoittamaan mahdollisen
+                erityisruokavalion, juoma-, musiikkikappale- ja muut toiveet. Ilmoittamalla
+                nämä tiedot voimme huomioida vieraamme parhaalla mahdollisella tavalla.
             </Typography>
             {guests.map((member, i) => (
                 <ConfirmOrDisagree
