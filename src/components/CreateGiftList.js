@@ -18,27 +18,27 @@ const CreateGiftList = () => {
         document.title = "Lahjalistan muokkaus";
     }, []);
 
-    const addGift = gift => {
+    const addGift = (gift) => {
         setGifts([...gifts, gift]);
     };
 
-    const deleteGift = index => () => {
+    const deleteGift = (index) => () => {
         setGifts(gifts.filter((gift, i) => i !== index));
     };
 
-    const saveGift = index => () => {
+    const saveGift = (index) => () => {
         firestore
             .collection("gifts")
             .add({
                 name: gifts[index],
                 reservedBy: "",
-                createdAt: Date.now()
+                createdAt: Date.now(),
             })
             .then(() => {
                 deleteGift(index)();
                 console.log("success");
             })
-            .catch(err => console.log(err.message));
+            .catch((err) => console.log(err.message));
     };
 
     return (
@@ -56,16 +56,12 @@ const CreateGiftList = () => {
                             </div>
                             <div className={classes.buttons}>
                                 <Tooltip title={"Tallenna " + gift}>
-                                    <Fab size="small" color="primary" onClick={saveGift(i)}>
+                                    <Fab size="small" color="secondary" onClick={saveGift(i)}>
                                         <SaveIcon />
                                     </Fab>
                                 </Tooltip>
                                 <Tooltip title={"Poista " + gift}>
-                                    <Fab
-                                        size="small"
-                                        color="secondary"
-                                        onClick={deleteGift(i)}
-                                    >
+                                    <Fab size="small" color="primary" onClick={deleteGift(i)}>
                                         <RemoveIcon />
                                     </Fab>
                                 </Tooltip>
@@ -78,25 +74,25 @@ const CreateGiftList = () => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 600,
         margin: "auto",
         "& > *": {
-            margin: theme.spacing(1)
-        }
+            margin: theme.spacing(1),
+        },
     },
     gift: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
     },
     buttons: {
         "& > *": {
-            marginLeft: theme.spacing(1)
-        }
-    }
+            marginLeft: theme.spacing(1),
+        },
+    },
 }));
 
 export default CreateGiftList;

@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CreateItem from "./CreateItem";
 import CreateNote from "./CreateNote";
 
-const ConfirmComing = props => {
+const ConfirmComing = (props) => {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     const [guests, setGuests] = useState([]);
@@ -22,9 +22,9 @@ const ConfirmComing = props => {
                 .collection("guests")
                 .where("account", "==", user.uid)
                 .get()
-                .then(querySnapshot => {
+                .then((querySnapshot) => {
                     const arr = [];
-                    querySnapshot.forEach(doc => {
+                    querySnapshot.forEach((doc) => {
                         arr.push({ ...doc.data(), id: doc.id });
                     });
                     setGuests(arr);
@@ -44,10 +44,10 @@ const ConfirmComing = props => {
                     modifyGuest(i, { isComing });
                     const statusMsg = isComing ? "osallistuvaksi" : "ei osallistuvaksi";
                     enqueueSnackbar(`${guest.name} ilmoitettu ${statusMsg}`, {
-                        variant: isComing ? "success" : "info"
+                        variant: isComing ? "success" : "info",
                     });
                 })
-                .catch(err => console.log(err));
+                .catch((err) => console.log(err));
         } else {
             // No id, so create a new avec
             if (isComing) {
@@ -56,18 +56,18 @@ const ConfirmComing = props => {
                     createdAt: Date.now(),
                     confirmedAt: Date.now(),
                     isComing: isComing,
-                    account: user.uid
+                    account: user.uid,
                 };
                 firestore
                     .collection("guests")
                     .add(avec)
-                    .then(res => {
+                    .then((res) => {
                         modifyGuest(i, { isComing, id: res.id });
                         enqueueSnackbar(`${guest.name} ilmoitettu osallistuvaksi`, {
-                            variant: isComing ? "success" : "info"
+                            variant: isComing ? "success" : "info",
                         });
                     })
-                    .catch(err => console.log(err));
+                    .catch((err) => console.log(err));
             } else {
                 setGuests(guests.filter((guest, index) => index !== i));
             }
@@ -80,28 +80,28 @@ const ConfirmComing = props => {
         setGuests(arr);
     };
 
-    const getLabelText = guest => {
+    const getLabelText = (guest) => {
         if (guest.isAvec) return "Seuralaisen " + guest.name + " status";
         if (guest.isFamilyMember) return guest.name + " status";
         return "Sinun statuksesi";
     };
 
-    const getStatusText = guest => {
+    const getStatusText = (guest) => {
         const isComing = guest.isComing;
         if (isComing === null) return "Vahvistamatta";
         if (isComing) return "Tulossa";
         return "Ei tulossa";
     };
 
-    const createAvec = name => {
+    const createAvec = (name) => {
         setGuests([
             ...guests,
-            { name: name, isAvec: true, isFamilyMember: false, isComing: null }
+            { name: name, isAvec: true, isFamilyMember: false, isComing: null },
         ]);
     };
 
     const userHasAvec = () => {
-        return guests.filter(guest => guest.isAvec).length !== 0;
+        return guests.filter((guest) => guest.isAvec).length !== 0;
     };
 
     if (!user.isAllowedToConfirm)
@@ -142,21 +142,21 @@ const ConfirmComing = props => {
             <Typography variant="subtitle2">
                 Kirjoita alla olevaan kenttään mahdolliset erikoisruokavaliot
             </Typography>
-            <CreateNote label="Erikoisruokavalio" collection="intolerances" />
+            <CreateNote label="Erikoisruokavalio" collection="intolerances" maxLength={500} />
         </div>
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 600,
         margin: "auto",
         "& > *": {
-            margin: theme.spacing(1)
-        }
-    }
+            margin: theme.spacing(1),
+        },
+    },
 }));
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps)(ConfirmComing);

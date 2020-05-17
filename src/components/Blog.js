@@ -8,15 +8,32 @@ import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
 import { Link } from "react-router-dom";
 
-const Blog = props => {
+const Blog = (props) => {
     const classes = useStyles();
     const { post, isEditable } = props;
 
-    const parsedSections = post.sections.map(section => {
+    const parsedSections = post.sections.map((section) => {
         const sectionCopy = { ...section };
         sectionCopy.sentences = sectionCopy.text.split("\n");
         return sectionCopy;
     });
+
+    const parseSentence = (sentence) => {
+        const result = sentence
+            .split(" ")
+            .map((word) => {
+                if (word.startsWith("http")) {
+                    return (
+                        <a key={word} className={classes.link} href={word}>
+                            {word}{" "}
+                        </a>
+                    );
+                }
+                return word + " ";
+            })
+            .filter((word) => word !== " ");
+        return result;
+    };
 
     const getCreatedAt = () => {
         if (post && post.createdAt) {
@@ -76,7 +93,7 @@ const Blog = props => {
                         {section.sentences.map((sentence, j) =>
                             sentence ? (
                                 <Typography key={j} className={classes.text} variant="body1">
-                                    {sentence}
+                                    {parseSentence(sentence)}
                                 </Typography>
                             ) : (
                                 <br key={j} />
@@ -105,34 +122,40 @@ const Blog = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 1000,
-        paddingBottom: theme.spacing(2)
+        paddingBottom: theme.spacing(2),
     },
     header: {
-        padding: theme.spacing(2)
+        padding: theme.spacing(2),
     },
     section: {
-        marginBottom: theme.spacing(3)
+        marginBottom: theme.spacing(3),
     },
     imageContainer: {
         marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(3)
+        marginBottom: theme.spacing(3),
     },
     imageCaption: {
         marginTop: theme.spacing(-1),
         padding: theme.spacing(1),
         color: "white",
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
     },
     image: {
-        width: "100%"
+        width: "100%",
     },
     text: {
         marginLeft: theme.spacing(4),
-        marginRight: theme.spacing(4)
-    }
+        marginRight: theme.spacing(4),
+    },
+    link: {
+        color: theme.palette.primary.main,
+        "&:hover": {
+            textDecoration: "underline",
+        },
+    },
 }));
 
 export default Blog;

@@ -5,9 +5,9 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { firestore } from "../firebase";
 
-const CreateNote = props => {
+const CreateNote = (props) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { user } = props;
+    const { user, maxLength } = props;
     const [note, setNote] = useState({ text: "" });
     const [originalNote, setOriginalNote] = useState({ text: "" });
     const [shouldSave, setShouldSave] = useState(false);
@@ -18,22 +18,22 @@ const CreateNote = props => {
             .where("createdBy", "==", user.uid)
             .limit(1)
             .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(doc => {
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     setNote({ ...data, id: doc.id });
                     setOriginalNote({ ...data, id: doc.id });
                 });
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
     }, []);
 
     useEffect(() => {
         setShouldSave(originalNote.text !== note.text);
     }, [note, originalNote]);
 
-    const handleChange = e => {
-        setNote({ ...note, text: e.target.value });
+    const handleChange = (e) => {
+        if (e.target.value.length <= maxLength) setNote({ ...note, text: e.target.value });
     };
 
     const onClick = () => {
@@ -50,14 +50,14 @@ const CreateNote = props => {
         firestore
             .collection(props.collection)
             .add({ text: note.text, createdBy: user.uid, createdAt: Date.now() })
-            .then(res => {
-                setNote(state => ({ ...state, id: res.id }));
+            .then((res) => {
+                setNote((state) => ({ ...state, id: res.id }));
                 setOriginalNote({ text: note.text });
                 enqueueSnackbar(`${props.label} tallennettu`, {
-                    variant: "info"
+                    variant: "info",
                 });
             })
-            .catch(err => console.error(err.message));
+            .catch((err) => console.error(err.message));
     };
 
     const saveNote = () => {
@@ -68,10 +68,10 @@ const CreateNote = props => {
             .then(() => {
                 setOriginalNote({ text: note.text });
                 enqueueSnackbar(`${props.label} tallennettu`, {
-                    variant: "info"
+                    variant: "info",
                 });
             })
-            .catch(err => console.error(err.message));
+            .catch((err) => console.error(err.message));
     };
 
     const deleteNote = () => {
@@ -83,16 +83,16 @@ const CreateNote = props => {
                 setNote({ text: "", id: null });
                 setOriginalNote({ text: "" });
                 enqueueSnackbar(`${props.label} tallennettu`, {
-                    variant: "info"
+                    variant: "info",
                 });
             })
-            .catch(err => console.error(err.message));
+            .catch((err) => console.error(err.message));
     };
 
     return (
         <div style={{ display: "flex", alignItems: "center" }}>
             <TextField
-                label={props.label}
+                label={`${props.label} (${note.text.length}/${maxLength})`}
                 multiline
                 fullWidth
                 value={note.text}
@@ -113,6 +113,10 @@ const CreateNote = props => {
     );
 };
 
-const mapStateToProps = state => ({ user: state.user });
+CreateNote.defaultProps = {
+    maxLength: 1000,
+};
+
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps)(CreateNote);
