@@ -14,21 +14,24 @@ import Login from "./Login";
 import LoadingScreen from "./LoadingScreen";
 import Routes from "./Routes";
 
-const App = props => {
+const App = (props) => {
     const { user, setUser } = props;
 
     useEffect(() => {
-        auth.onAuthStateChanged(usr => {
+        auth.onAuthStateChanged((usr) => {
             if (usr) {
                 firestore
                     .collection("users")
                     .doc(usr.uid)
                     .get()
-                    .then(doc => {
+                    .then((doc) => {
                         const data = doc.data();
                         if (data) {
                             setUser({ uid: usr.uid, ...data, isSignedIn: true });
                         }
+                    })
+                    .catch((err) => {
+                        console.error(err);
                     });
             } else {
                 setUser({ uid: null, isSignedIn: false });
@@ -56,6 +59,6 @@ const App = props => {
     );
 };
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps, { setUser })(App);

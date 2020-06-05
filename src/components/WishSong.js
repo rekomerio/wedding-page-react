@@ -19,24 +19,24 @@ const WishSong = ({ user, setLoading }) => {
         const unsubscribe = firestore
             .collection("songs")
             .where("addedBy", "==", user.uid)
-            .onSnapshot(snapshot => {
-                snapshot.docChanges().forEach(change => {
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
                     const data = change.doc.data();
                     if (change.type === "added") {
-                        setSongs(state => {
+                        setSongs((state) => {
                             return [
                                 ...state,
                                 {
                                     ...data,
                                     id: change.doc.id,
-                                    isLoading: false
-                                }
+                                    isLoading: false,
+                                },
                             ];
                         });
                     }
                     if (change.type === "removed") {
-                        setSongs(state => {
-                            return state.filter(song => song.id !== change.doc.id);
+                        setSongs((state) => {
+                            return state.filter((song) => song.id !== change.doc.id);
                         });
                     }
                 });
@@ -44,27 +44,27 @@ const WishSong = ({ user, setLoading }) => {
         return unsubscribe;
     }, [user]);
 
-    const addSong = song => {
+    const addSong = (song) => {
         setLoading(true);
 
         const addSong = functions.httpsCallable("addSong");
         addSong(song)
-            .then(res => console.log(res))
-            .catch(err => console.log(err.message))
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err.message))
             .finally(() => setLoading(false));
     };
 
-    const deleteSong = id => () => {
+    const deleteSong = (id) => () => {
         modifySong(id, { isLoading: true });
 
         const removeSong = functions.httpsCallable("removeSong");
         removeSong({ id })
-            .then(res => console.log(res))
-            .catch(err => console.log(err.message));
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err.message));
     };
 
     const modifySong = (id, properties) => {
-        const arr = songs.map(song => (song.id === id ? { ...song, ...properties } : song));
+        const arr = songs.map((song) => (song.id === id ? { ...song, ...properties } : song));
         setSongs(arr);
     };
 
@@ -75,7 +75,7 @@ const WishSong = ({ user, setLoading }) => {
             </Typography>
             <Typography variant="body1">Esitä toiveesi tässä</Typography>
             <div className={classes.songs}>
-                {songs.map(song => (
+                {songs.map((song) => (
                     <ConfirmOrDisagree
                         key={song.id}
                         label={song.isLoading ? "Poistetaan..." : "Kappale"}
@@ -93,15 +93,15 @@ const WishSong = ({ user, setLoading }) => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
-    root: { maxWidth: 600, margin: "auto" },
+const useStyles = makeStyles((theme) => ({
+    root: { maxWidth: 600, margin: "auto", paddingTop: theme.spacing(6) },
     songs: {
         "& > *": {
-            margin: theme.spacing(0.5)
-        }
-    }
+            margin: theme.spacing(0.5),
+        },
+    },
 }));
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps, { setLoading })(WishSong);

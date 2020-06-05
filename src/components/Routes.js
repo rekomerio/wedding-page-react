@@ -10,11 +10,11 @@ import Users from "./Users";
 import Guests from "./Guests";
 import EditBlogPost from "./EditBlogPost";
 import Homepage from "./Homepage";
-import WishSong from "./WishSong";
 import Songs from "./Songs";
 import AuthorizedRoute from "./AuthorizedRoute";
 import NotFound from "./NotFound";
 import Blogs from "./Blogs";
+import UserSettings from "./UserSettings";
 
 const Routes = ({ user }) => (
     <Switch>
@@ -25,7 +25,11 @@ const Routes = ({ user }) => (
         <Route exact path="/blog" component={Blogs} />
         <Route path="/user/confirm" component={ConfirmComing} />
         <Route path="/giftlist/reserve" component={ReserveGift} />
-        <Route path="/songs/wish" component={WishSong} />
+        <AuthorizedRoute
+            path="/user/settings"
+            authorized={user.isAdmin}
+            component={UserSettings}
+        />
         <AuthorizedRoute path="/songs/all" authorized={user.isAdmin} component={Songs} />
         <AuthorizedRoute
             path="/blog/create"
@@ -55,6 +59,6 @@ const Routes = ({ user }) => (
     </Switch>
 );
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps)(Routes);

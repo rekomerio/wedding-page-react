@@ -8,7 +8,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import QueueMusicIcon from "@material-ui/icons/QueueMusic";
 import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import GroupIcon from "@material-ui/icons/Group";
@@ -18,16 +17,15 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
-const Drawer = props => {
+const Drawer = (props) => {
     const classes = useStyles();
     const { isOpen, setIsOpen, user } = props;
 
     const links = [
         { path: "/", text: "Etusivu", icon: <HomeIcon /> },
-        { path: "/blog", text: "Blogi", icon: <LibraryBooksIcon /> },
+        { path: "/blog", text: "Meistä ja häistä", icon: <LibraryBooksIcon /> },
         { path: "/user/confirm", text: "Ilmoittautuminen", icon: <PersonAddIcon /> },
         { path: "/giftlist/reserve", text: "Lahjalista", icon: <CardGiftcardIcon /> },
-        { path: "/songs/wish", text: "Toivo kappaletta", icon: <MusicNoteIcon /> }
     ];
 
     const privateLinks = [
@@ -35,7 +33,7 @@ const Drawer = props => {
         { path: "/giftlist/create", text: "Lahjalistan hallinta", icon: <CardGiftcardIcon /> },
         { path: "/guests", text: "Vieraslista", icon: <GroupIcon /> },
         { path: "/users", text: "Käyttäjät", icon: <SupervisedUserCircleIcon /> },
-        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> }
+        { path: "/songs/all", text: "Musiikkitoiveet", icon: <QueueMusicIcon /> },
     ];
 
     return (
@@ -51,7 +49,7 @@ const Drawer = props => {
                 onKeyDown={() => setIsOpen(false)}
             >
                 <List>
-                    {links.map(link => (
+                    {links.map((link) => (
                         <Link to={link.path} key={link.text} style={{ color: "#000" }}>
                             <ListItem button>
                                 <ListItemIcon>{link.icon}</ListItemIcon>
@@ -65,7 +63,7 @@ const Drawer = props => {
                     <>
                         <Divider />
                         <List>
-                            {privateLinks.map(link => (
+                            {privateLinks.map((link) => (
                                 <Link to={link.path} key={link.text} style={{ color: "#000" }}>
                                     <ListItem button>
                                         <ListItemIcon>{link.icon}</ListItemIcon>
@@ -81,12 +79,12 @@ const Drawer = props => {
     );
 };
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps)(Drawer);
 
 const useStyles = makeStyles({
     list: {
-        width: 250
-    }
+        width: 250,
+    },
 });

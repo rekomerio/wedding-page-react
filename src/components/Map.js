@@ -7,7 +7,7 @@ const Map = ({ height, width }) => {
         const marker = new maps.Marker({
             position: { lat: 62.14478, lng: 25.467761 },
             title: "The place to be",
-            map
+            map,
         });
         return marker;
     };
@@ -17,7 +17,7 @@ const Map = ({ height, width }) => {
             <GoogleMapReact
                 bootstrapURLKeys={MAPS_API_KEY}
                 defaultCenter={{ lat: 62.14478, lng: 25.467761 }}
-                defaultZoom={12}
+                defaultZoom={14}
                 yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={({ map, maps }) => renderMarkers(map, maps)}
             ></GoogleMapReact>

@@ -7,6 +7,7 @@ import { firestore } from "../firebase";
 import Typography from "@material-ui/core/Typography";
 import CreateItem from "./CreateItem";
 import CreateNote from "./CreateNote";
+import WishSong from "./WishSong";
 
 const ConfirmComing = (props) => {
     const classes = useStyles();
@@ -113,10 +114,10 @@ const ConfirmComing = (props) => {
         <div className={classes.root}>
             <Typography variant="h6">Häihin ilmoittautuminen</Typography>
             <Typography variant="body1">
-                Ilmoittautuminen on nyt auki, ja ilmoittautumisstatusta voi muuttaa 30.6.2020
+                Ilmoittautuminen on nyt auki, ja ilmoittautumisstatusta voi muuttaa 2.7.2020
                 asti. Ilmoittautumisstatuksen lisäksi pyydämme ilmoittamaan mahdollisen
-                erityisruokavalion, juoma-, musiikkikappale- ja muut toiveet. Ilmoittamalla
-                nämä tiedot voimme huomioida vieraamme parhaalla mahdollisella tavalla.
+                erityisruokavalion ja muut mahdolliset toiveet. Ilmoittamalla nämä tiedot
+                voimme huomioida vieraamme parhaalla mahdollisella tavalla.
             </Typography>
             {guests.map((member, i) => (
                 <ConfirmOrDisagree
@@ -143,6 +144,7 @@ const ConfirmComing = (props) => {
                 Kirjoita alla olevaan kenttään mahdolliset erikoisruokavaliot
             </Typography>
             <CreateNote label="Erikoisruokavalio" collection="intolerances" maxLength={500} />
+            <WishSong />
         </div>
     );
 };

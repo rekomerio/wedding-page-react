@@ -16,16 +16,17 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { useParams } from "react-router-dom";
 
-const EditUser = props => {
+const EditUser = (props) => {
     const classes = useStyles();
     const { id } = useParams();
+    const [isLoading, setIsLoading] = useState(true);
     const [userName, setUserName] = useState("");
     const [user, setUser] = useState({});
     const [familyMembers, setFamilyMembers] = useState([]);
     const [checkBox, setCheckBox] = useState({
         isAvecAllowed: false,
         isFamilyAllowed: false,
-        isAllowedToConfirm: true
+        isAllowedToConfirm: true,
     });
     const [shouldSave, setShouldSave] = useState(false);
 
@@ -39,7 +40,7 @@ const EditUser = props => {
                 .collection("users")
                 .doc(id)
                 .get()
-                .then(doc => {
+                .then((doc) => {
                     const userData = doc.data();
                     if (!userData) {
                         props.setLoading(false);
@@ -49,7 +50,7 @@ const EditUser = props => {
                     setCheckBox({
                         isAvecAllowed: userData.isAvecAllowed,
                         isFamilyAllowed: userData.isFamilyAllowed,
-                        isAllowedToConfirm: userData.isAllowedToConfirm
+                        isAllowedToConfirm: userData.isAllowedToConfirm,
                     });
                     setUserName(userData.name);
                     // Get potential family members
@@ -57,23 +58,24 @@ const EditUser = props => {
                         .collection("guests")
                         .where("account", "==", id)
                         .get()
-                        .then(querySnapshot => {
+                        .then((querySnapshot) => {
                             const arr = [];
-                            querySnapshot.forEach(docs => {
+                            querySnapshot.forEach((docs) => {
                                 if (docs.data().isAvec || docs.data().isFamilyMember)
                                     arr.push({
                                         ...docs.data(),
                                         id: docs.id,
                                         isSaved: true,
-                                        isSaving: false
+                                        isSaving: false,
                                     });
                             });
                             setFamilyMembers(arr);
                         })
-                        .catch(err => console.log(err))
+                        .catch((err) => console.log(err))
                         .finally(() => props.setLoading(false));
                 })
-                .catch(err => console.log(err));
+                .catch((err) => console.log(err))
+                .finally(() => setIsLoading(false));
         }
     }, [id, props]);
 
@@ -86,7 +88,7 @@ const EditUser = props => {
         );
     }, [user, checkBox, userName]);
 
-    const saveFamilyMember = index => () => {
+    const saveFamilyMember = (index) => () => {
         if (!familyMembers[index]) {
             return;
         }
@@ -101,17 +103,17 @@ const EditUser = props => {
                 isFamilyMember: true,
                 isAvec: false,
                 confirmedAt: null,
-                createdAt: Date.now()
+                createdAt: Date.now(),
             })
-            .then(res => {
+            .then((res) => {
                 modifyFamilyMember(index, { isSaved: true, id: res.id });
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err))
             .finally(() => modifyFamilyMember(index, { isSaving: false }));
     };
 
     const saveUserInformation = () => {
-        if (checkBox.isFamilyAllowed && familyMembers.find(member => !member.isSaved)) {
+        if (checkBox.isFamilyAllowed && familyMembers.find((member) => !member.isSaved)) {
             if (!window.confirm("Kaikkia perheenjäseniä ei ole vielä tallennettu!")) {
                 return;
             }
@@ -121,7 +123,7 @@ const EditUser = props => {
             isAvecAllowed: checkBox.isAvecAllowed,
             isFamilyAllowed: checkBox.isFamilyAllowed,
             isAllowedToConfirm: checkBox.isAllowedToConfirm,
-            name: userName
+            name: userName,
         };
 
         firestore
@@ -132,7 +134,7 @@ const EditUser = props => {
                 setUser(Object.assign(user, data));
                 setShouldSave(false);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
     };
 
     const deleteFamilyMember = (id, index) => () => {
@@ -144,10 +146,10 @@ const EditUser = props => {
                 console.log("deleted", id);
                 removeFamilyMember(index)();
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
     };
 
-    const addFamilyMember = name => {
+    const addFamilyMember = (name) => {
         setFamilyMembers([...familyMembers, { name: name, isSaved: false, isSaving: false }]);
     };
 
@@ -157,24 +159,28 @@ const EditUser = props => {
         setFamilyMembers(arr);
     };
 
-    const removeFamilyMember = index => () => {
+    const removeFamilyMember = (index) => () => {
         setFamilyMembers(familyMembers.filter((m, i) => i !== index));
     };
 
-    const handleCheckBoxChange = event => {
+    const handleCheckBoxChange = (event) => {
         setCheckBox({ ...checkBox, [event.target.name]: event.target.checked });
     };
 
-    const handleUserName = e => {
+    const handleUserName = (e) => {
         setUserName(e.target.value);
     };
 
-    const checkButtonStatusText = index => {
+    const checkButtonStatusText = (index) => {
         const name = familyMembers[index].name;
         if (familyMembers[index].isSaving) return "Tallennetaan henkilöä " + name;
         if (familyMembers[index].isSaved) return "Henkilö " + name + " on tallennettu";
         return "Tallenna henkilö " + name;
     };
+
+    if (isLoading) {
+        return <div>Ladataan...</div>;
+    }
 
     if (!user.email) {
         return <div>User {id} does not exist</div>;
@@ -268,22 +274,22 @@ const EditUser = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: 700,
         margin: "auto",
         "& > *": {
-            margin: theme.spacing(1)
-        }
+            margin: theme.spacing(1),
+        },
     },
     family: {
         "& > *": {
-            margin: theme.spacing(1)
-        }
+            margin: theme.spacing(1),
+        },
     },
     formControl: {
-        width: "100%"
-    }
+        width: "100%",
+    },
 }));
 
 export default connect(null, { setLoading })(EditUser);

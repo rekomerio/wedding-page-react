@@ -5,7 +5,7 @@ import { firestore } from "../firebase";
 import Blog from "./Blog";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const Blogs = props => {
+const Blogs = (props) => {
     const classes = useStyles();
     const [blogs, setBlogs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ const Blogs = props => {
     const { user } = props;
 
     useEffect(() => {
-        document.title = "Blogi";
+        document.title = "Meistä ja häistä";
     }, []);
 
     useEffect(() => {
@@ -27,15 +27,15 @@ const Blogs = props => {
             .orderBy("createdAt", "desc")
             .limit(1)
             .get()
-            .then(querySnapshot => {
+            .then((querySnapshot) => {
                 lastDoc.current = querySnapshot.docs[querySnapshot.docs.length - 1];
                 const arr = [];
-                querySnapshot.forEach(doc => {
+                querySnapshot.forEach((doc) => {
                     arr.push({ ...doc.data(), id: doc.id });
                 });
                 setBlogs(arr);
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err))
             .finally(() => {
                 setIsLoading(false);
                 props.setLoading(false);
@@ -57,12 +57,12 @@ const Blogs = props => {
                     .startAfter(lastDoc.current.data().createdAt)
                     .limit(1)
                     .get()
-                    .then(querySnapshot => {
+                    .then((querySnapshot) => {
                         if (querySnapshot.docs.length > 0) {
                             lastDoc.current =
                                 querySnapshot.docs[querySnapshot.docs.length - 1];
                             const arr = [];
-                            querySnapshot.forEach(doc => {
+                            querySnapshot.forEach((doc) => {
                                 arr.push({ ...doc.data(), id: doc.id });
                             });
                             setBlogs([...blogs, ...arr]);
@@ -71,7 +71,7 @@ const Blogs = props => {
                             nothingToLoad.current = true;
                         }
                     })
-                    .catch(err => console.log(err))
+                    .catch((err) => console.log(err))
                     .finally(() => {
                         setIsLoading(false);
                         props.setLoading(false);
@@ -86,7 +86,7 @@ const Blogs = props => {
     return (
         <div className={classes.root}>
             <div className={classes.blogs}>
-                {blogs.map(blog => (
+                {blogs.map((blog) => (
                     <div key={blog.id} className={classes.blog}>
                         <Blog post={blog} isEditable={user.isAdmin} />
                     </div>
@@ -96,20 +96,20 @@ const Blogs = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         margin: "auto",
         maxWidth: 800,
         "& > *": {
-            margin: theme.spacing(0)
-        }
+            margin: theme.spacing(0),
+        },
     },
     blogs: {},
     blog: {
-        margin: theme.spacing(2)
-    }
+        margin: theme.spacing(2),
+    },
 }));
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = (state) => ({ user: state.user });
 
 export default connect(mapStateToProps, { setLoading })(Blogs);

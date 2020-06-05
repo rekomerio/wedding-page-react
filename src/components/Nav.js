@@ -14,7 +14,7 @@ import Drawer from "./Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
 
-const Nav = props => {
+const Nav = (props) => {
     const classes = useStyles();
     const location = useLocation();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -37,7 +37,7 @@ const Nav = props => {
                         className={classes.menuButton}
                         color="inherit"
                         aria-label="menu"
-                        onClick={() => setIsDrawerOpen(state => !state)}
+                        onClick={() => setIsDrawerOpen((state) => !state)}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -58,27 +58,27 @@ const Nav = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     spacer: {
         minHeight: 64,
         ["@media (max-width:600px)"]: {
-            minHeight: 56
-        }
+            minHeight: 56,
+        },
     },
     menuButton: {
-        marginRight: theme.spacing(2)
+        marginRight: theme.spacing(2),
     },
     title: {
-        flexGrow: 1
-    }
+        flexGrow: 1,
+    },
 }));
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     isLoading: state.loadingState.isLoading,
-    user: state.user
+    user: state.user,
 });
 
 export default connect(mapStateToProps)(Nav);

@@ -12,13 +12,13 @@ const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setMessage("");
 
         auth.signInWithEmailAndPassword(credentials.email, credentials.password)
-            .catch(error => {
+            .catch((error) => {
                 console.log(error.message);
                 setMessage(error.message);
             })
@@ -34,7 +34,7 @@ const Login = () => {
         }
     }, []);
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
@@ -52,7 +52,7 @@ const Login = () => {
                     onSubmit={handleSubmit}
                 >
                     <TextField
-                        label="Email"
+                        label="Käyttäjätunnus"
                         name="email"
                         value={credentials.email}
                         onChange={handleChange}
@@ -89,7 +89,7 @@ const Login = () => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     loginWindow: {
         margin: "auto",
         width: 500,
@@ -99,21 +99,21 @@ const useStyles = makeStyles(theme => ({
         textAlign: "center",
         ["@media (max-width:500px)"]: {
             // eslint-disable-line no-useless-computed-key
-            width: "100%"
-        }
+            width: "100%",
+        },
     },
     form: {
         margin: theme.spacing(2),
         minWidth: 240,
         "& .MuiTextField-root": {
-            margin: theme.spacing(1)
-        }
+            margin: theme.spacing(1),
+        },
     },
     button: {
         display: "block",
         margin: theme.spacing(1),
-        width: "100%"
-    }
+        width: "100%",
+    },
 }));
 
 export default Login;

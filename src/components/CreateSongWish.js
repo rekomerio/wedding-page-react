@@ -69,7 +69,7 @@ const CreateSongWish = (props) => {
                                 rotation === 0 ? "none" : `transform ${transitionDuration}ms`,
                             transform: `rotate(${rotation}deg)`,
                         }}
-                        color="primary"
+                        color="secondary"
                         aria-label="add"
                         size="small"
                         onClick={addItem}
@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "space-between",
         "& > *": {
             margin: theme.spacing(1),
+        },
+        ["@media (max-width:500px)"]: {
+            flexDirection: "column",
         },
     },
 }));
