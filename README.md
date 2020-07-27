@@ -1,5 +1,5 @@
 # wedding-page-react
-Web app for managing weddings. I'm doing this project for my sisters wedding and it is not yet finished, but I wanted to add some screenshots of the current progress to show it to potential recruiters.
+Web app for managing weddings.
 
 ### Main functionality
  * Owner can write and edit blogs
