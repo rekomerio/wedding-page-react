@@ -12,8 +12,9 @@ import { firestore } from "../firebase";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
-const CreateBlog = props => {
+const CreateBlog = (props) => {
     const classes = useStyles();
+    const [imageUploadIndex, setImageUploadIndex] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
     const [title, setTitle] = useState("");
     const [postId, setPostId] = useState("");
@@ -26,8 +27,8 @@ const CreateBlog = props => {
             isUploading: false,
             url: "",
             text: "",
-            startUpload: false
-        }
+            startUpload: false,
+        },
     };
 
     const [sections, setSections] = useState([emptyData]);
@@ -50,19 +51,31 @@ const CreateBlog = props => {
 
     useEffect(() => {
         if (isUploading) {
-            const imagesToUpload = sections.filter(section => section.image.file);
-            const uploaded = imagesToUpload.filter(section => section.image.isUploaded);
+            const { image } = sections[imageUploadIndex];
+            if (!image.isUploading && !image.isUploaded && !image.startUpload && image.file) {
+                startUpload(imageUploadIndex);
+            }
+            if (image.isUploaded || !image.file) {
+                setImageUploadIndex((val) => (val + 1) % sections.length);
+            }
+        }
+    }, [imageUploadIndex, sections, isUploading]);
+
+    useEffect(() => {
+        if (isUploading) {
+            const imagesToUpload = sections.filter((section) => section.image.file);
+            const uploaded = imagesToUpload.filter((section) => section.image.isUploaded);
             if (title && imagesToUpload.length === uploaded.length) {
                 submitPost();
             }
         }
     }, [sections, isUploading]);
 
-    const changeTitle = e => {
+    const changeTitle = (e) => {
         setTitle(e.target.value);
     };
 
-    const editSection = index => value => {
+    const editSection = (index) => (value) => {
         const arr = [...sections];
         arr[index] = value;
 
@@ -73,12 +86,12 @@ const CreateBlog = props => {
         setSections([...sections, emptyData]);
     };
 
-    const removeSection = index => () => {
+    const removeSection = (index) => () => {
         const arr = sections.filter((section, i) => index !== i);
         setSections(arr);
     };
 
-    const moveSectionDown = index => () => {
+    const moveSectionDown = (index) => () => {
         const arr = [...sections];
         const temp = arr[index + 1];
         arr[index + 1] = arr[index];
@@ -87,7 +100,7 @@ const CreateBlog = props => {
         setSections(arr);
     };
 
-    const moveSectionUp = index => () => {
+    const moveSectionUp = (index) => () => {
         const arr = [...sections];
         const temp = arr[index - 1];
         arr[index - 1] = arr[index];
@@ -96,38 +109,30 @@ const CreateBlog = props => {
         setSections(arr);
     };
 
-    const startUpload = index => {
+    const startUpload = (index) => {
         const arr = sections.map((section, i) => {
-            if (i === index) {
-                section.image.startUpload = true;
-            }
-            return section;
+            const sectionCopy = { ...section };
+            sectionCopy.image.startUpload = i === index;
+            return sectionCopy;
         });
         setSections(arr);
     };
 
-    const sendImages = () => {
-        setIsUploading(true);
-
-        sections.forEach((section, i) => {
-            startUpload(i);
-        });
-    };
-
     const submitPost = () => {
+        setImageUploadIndex(0);
         const post = {
             title: title,
-            sections: sections.map(section => ({
+            sections: sections.map((section) => ({
                 title: section.title,
                 text: section.text,
                 image: {
                     url: section.image.url || "",
                     path: section.image.path || "",
-                    text: section.image.text || ""
-                }
+                    text: section.image.text || "",
+                },
             })),
             editedAt: Date.now(),
-            createdAt: postId ? props.post.createdAt : Date.now()
+            createdAt: postId ? props.post.createdAt : Date.now(),
         };
         // Edit post if id is coming from props
         if (postId) {
@@ -138,25 +143,27 @@ const CreateBlog = props => {
                 .then(() => {
                     console.log("Document edited with ID:", postId);
                     setTitle("");
+                    setIsUploading(false);
                     setSections([emptyData]);
                 })
-                .catch(error => {
+                .catch((error) => {
+                    setIsUploading(false);
                     console.error("Error adding document: ", error);
-                })
-                .finally(() => setIsUploading(false));
+                });
         } else {
             firestore
                 .collection("blogs")
                 .add(post)
-                .then(doc => {
+                .then((doc) => {
                     console.log("Document written with ID:", doc.id);
                     setTitle("");
+                    setIsUploading(false);
                     setSections([emptyData]);
                 })
-                .catch(error => {
+                .catch((error) => {
+                    setIsUploading(false);
                     console.error("Error adding document: ", error);
-                })
-                .finally(() => setIsUploading(false));
+                });
         }
     };
 
@@ -183,7 +190,7 @@ const CreateBlog = props => {
                                 variant="contained"
                                 color="secondary"
                                 disabled={isUploading || !title}
-                                onClick={sendImages}
+                                onClick={() => setIsUploading(true)}
                             >
                                 {postId ? "Tallenna" : "Luo uusi"}
                             </Button>
@@ -221,35 +228,35 @@ const CreateBlog = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: "90%",
         margin: "auto",
         "& > *": {
-            margin: theme.spacing(2)
-        }
+            margin: theme.spacing(2),
+        },
     },
     flexContainer: {
         display: "flex",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     create: {
         width: "40vw",
-        margin: theme.spacing(2)
+        margin: theme.spacing(2),
     },
     createSection: {
-        margin: theme.spacing(2)
+        margin: theme.spacing(2),
     },
     preview: {
         width: "60vw",
-        marginTop: 46
+        marginTop: 46,
     },
     titleContainer: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        margin: theme.spacing(2)
-    }
+        margin: theme.spacing(2),
+    },
 }));
 
 export default connect(null, { setLoading })(CreateBlog);
