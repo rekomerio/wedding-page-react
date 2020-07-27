@@ -29,6 +29,10 @@ const ConfirmComing = (props) => {
                         arr.push({ ...doc.data(), id: doc.id });
                     });
                     setGuests(arr);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    enqueueSnackbar(err.message, { variant: "error" });
                 });
         }
     }, [user]);
@@ -48,7 +52,10 @@ const ConfirmComing = (props) => {
                         variant: isComing ? "success" : "info",
                     });
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+                    console.log(err);
+                    enqueueSnackbar(err.message, { variant: "error" });
+                });
         } else {
             // No id, so create a new avec
             if (isComing) {
@@ -68,7 +75,10 @@ const ConfirmComing = (props) => {
                             variant: isComing ? "success" : "info",
                         });
                     })
-                    .catch((err) => console.log(err));
+                    .catch((err) => {
+                        console.log(err);
+                        enqueueSnackbar(err.message, { variant: "error" });
+                    });
             } else {
                 setGuests(guests.filter((guest, index) => index !== i));
             }
@@ -79,6 +89,16 @@ const ConfirmComing = (props) => {
         const arr = [...guests];
         arr[index] = Object.assign(arr[index], object);
         setGuests(arr);
+    };
+
+    const getConfirmText = (guest) => {
+        if (guest.isAvec || guest.isFamilyMember) return guest.name + " on tulossa";
+        return "Sinä olet tulossa";
+    };
+
+    const getDisagreeText = (guest) => {
+        if (guest.isAvec || guest.isFamilyMember) return guest.name + " ei ole tulossa";
+        return "Sinä et ole tulossa";
     };
 
     const getLabelText = (guest) => {
@@ -105,45 +125,56 @@ const ConfirmComing = (props) => {
         return guests.filter((guest) => guest.isAvec).length !== 0;
     };
 
-    if (!user.isAllowedToConfirm)
-        return (
-            <Typography variant="h6">Ilmoittautuminen on suljettu sinun osaltasi</Typography>
-        );
-
     return (
         <div className={classes.root}>
-            <Typography variant="h6">Häihin ilmoittautuminen</Typography>
-            <Typography variant="body1">
-                Ilmoittautuminen on nyt auki, ja ilmoittautumisstatusta voi muuttaa 2.7.2020
-                asti. Ilmoittautumisstatuksen lisäksi pyydämme ilmoittamaan mahdollisen
-                erityisruokavalion ja muut mahdolliset toiveet. Ilmoittamalla nämä tiedot
-                voimme huomioida vieraamme parhaalla mahdollisella tavalla.
-            </Typography>
-            {guests.map((member, i) => (
-                <ConfirmOrDisagree
-                    key={i}
-                    label={getLabelText(member)}
-                    text={getStatusText(member)}
-                    confirmText={member.name + " on tulossa"}
-                    disagreeText={member.name + " ei ole tulossa"}
-                    confirmDisabled={member.isComing}
-                    disagreeDisabled={member.isComing === false}
-                    onConfirm={confirmGuest(i, true)}
-                    onDisagree={confirmGuest(i, false)}
-                />
-            ))}
-            {user.isAvecAllowed && !userHasAvec() && (
+            {
                 <>
+                    <Typography variant="h6">Häihin ilmoittautuminen</Typography>
+                    {user.isAllowedToConfirm ? (
+                        <Typography variant="body1">
+                            Ilmoittautuminen on nyt auki, ja ilmoittautumisstatusta voi muuttaa
+                            2.7.2020 asti. Ilmoittautumisstatuksen lisäksi pyydämme
+                            ilmoittamaan mahdollisen erityisruokavalion ja muut mahdolliset
+                            toiveet. Ilmoittamalla nämä tiedot voimme huomioida vieraamme
+                            parhaalla mahdollisella tavalla.
+                        </Typography>
+                    ) : (
+                        <Typography variant="body1">Ilmoittautuminen on suljettu</Typography>
+                    )}
+                    {guests.map((member, i) => (
+                        <ConfirmOrDisagree
+                            key={i}
+                            label={getLabelText(member)}
+                            text={getStatusText(member)}
+                            confirmText={getConfirmText(member)}
+                            disagreeText={getDisagreeText(member)}
+                            confirmDisabled={member.isComing || !user.isAllowedToConfirm}
+                            disagreeDisabled={
+                                member.isComing === false || !user.isAllowedToConfirm
+                            }
+                            onConfirm={confirmGuest(i, true)}
+                            onDisagree={confirmGuest(i, false)}
+                        />
+                    ))}
+                    {user.isAvecAllowed && !userHasAvec() && (
+                        <div>
+                            <Typography variant="subtitle2">
+                                Voit halutessasi tuoda myös seuralaisen
+                            </Typography>
+                            <CreateItem label="Henkilön nimi" add={createAvec} />
+                        </div>
+                    )}
                     <Typography variant="subtitle2">
-                        Voit halutessasi tuoda myös seuralaisen
+                        Kirjoita ja tallenna alla olevaan kenttään mahdolliset
+                        erikoisruokavaliot
                     </Typography>
-                    <CreateItem label="Henkilön nimi" add={createAvec} />
+                    <CreateNote
+                        label="Erikoisruokavalio"
+                        collection="intolerances"
+                        maxLength={500}
+                    />
                 </>
-            )}
-            <Typography variant="subtitle2">
-                Kirjoita alla olevaan kenttään mahdolliset erikoisruokavaliot
-            </Typography>
-            <CreateNote label="Erikoisruokavalio" collection="intolerances" maxLength={500} />
+            }
             <WishSong />
         </div>
     );
@@ -156,6 +187,9 @@ const useStyles = makeStyles((theme) => ({
         "& > *": {
             margin: theme.spacing(1),
         },
+    },
+    textBox: {
+        margin: theme.spacing(8, 0),
     },
 }));
 

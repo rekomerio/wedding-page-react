@@ -138,6 +138,8 @@ const EditUser = (props) => {
     };
 
     const deleteFamilyMember = (id, index) => () => {
+        if (!window.confirm("Haluatko varmasti poistaa tämän vieraan?")) return;
+
         firestore
             .collection("guests")
             .doc(id)

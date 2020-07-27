@@ -9,7 +9,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { functions } from "../firebase";
 import { useSnackbar } from "notistack";
 
-const ReserveGiftItem = props => {
+const ReserveGiftItem = (props) => {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
     const [isReserving, setIsReserving] = useState(false);
@@ -20,44 +20,44 @@ const ReserveGiftItem = props => {
         return () => (isMounted.current = false);
     }, []);
 
-    const reserveGift = id => () => {
+    const reserveGift = (id) => () => {
         const reserve = functions.httpsCallable("reserveGift");
 
         setIsReserving(true);
 
         reserve({ giftId: id })
-            .then(res => {
+            .then((res) => {
                 console.log(res);
                 const { message } = res.data;
                 if (message.toLowerCase() === "ok") {
                     enqueueSnackbar(`${gift.name} varattu sinulle`, {
-                        variant: "success"
+                        variant: "success",
                     });
                 } else {
                     enqueueSnackbar(message, {
-                        variant: "info"
+                        variant: "info",
                     });
                 }
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err))
             .finally(() => {
                 if (isMounted.current) setIsReserving(false);
             });
     };
 
-    const removeReservation = id => () => {
+    const removeReservation = (id) => () => {
         const unReserve = functions.httpsCallable("removeGiftReservation");
 
         setIsReserving(true);
 
         unReserve({ giftId: id })
-            .then(res => {
+            .then((res) => {
                 console.log(res);
                 enqueueSnackbar(`${gift.name} varaus poistettu`, {
-                    variant: "info"
+                    variant: "info",
                 });
             })
-            .catch(err => console.log(err))
+            .catch((err) => console.log(err))
             .finally(() => {
                 if (isMounted.current) setIsReserving(false);
             });
@@ -66,76 +66,84 @@ const ReserveGiftItem = props => {
     return (
         <Paper>
             <div className={classes.gift}>
-                <div>
-                    {gift.reservedByUser ? (
+                <div className={classes.text}>
+                    {gift.reservedByUser && (
                         <Typography className={classes.reservedText} variant="subtitle2">
                             Olet varannut tämän lahjan
                         </Typography>
-                    ) : null}
+                    )}
                     <Typography variant="caption">Lahjan nimi</Typography>
                     <Typography variant="body1">{gift.name}</Typography>
                 </div>
-                <div className={classes.buttons}>
-                    <Typography variant="caption">
-                        {isReserving ? "Vahvistetaan..." : ""}
-                    </Typography>
-                    <Tooltip
-                        title={
-                            Boolean(gift.reservedBy)
-                                ? "Tämä lahja on jo varattu"
-                                : "Varaa lahja " + gift.name
-                        }
-                    >
-                        <span>
-                            <Fab
-                                size="small"
-                                color="secondary"
-                                onClick={reserveGift(gift.id)}
-                                disabled={isReserving || Boolean(gift.reservedBy)}
-                            >
-                                <SaveIcon />
-                            </Fab>
-                        </span>
-                    </Tooltip>
-                    <Tooltip
-                        title={
-                            gift.reservedByUser
-                                ? "Poista varaus"
-                                : "Et ole varannut tätä lahjaa"
-                        }
-                    >
-                        <span>
-                            <Fab
-                                size="small"
-                                color="primary"
-                                onClick={removeReservation(gift.id)}
-                                disabled={isReserving || !gift.reservedByUser}
-                            >
-                                <RemoveIcon />
-                            </Fab>
-                        </span>
-                    </Tooltip>
+                <div>
+                    {isReserving && (
+                        <Typography className={classes.reservingText} variant="caption">
+                            Vahvistetaan...
+                        </Typography>
+                    )}
+                    <div className={classes.buttons}>
+                        <Tooltip
+                            title={
+                                Boolean(gift.reservedBy)
+                                    ? "Tämä lahja on jo varattu"
+                                    : "Varaa lahja " + gift.name
+                            }
+                        >
+                            <span>
+                                <Fab
+                                    size="small"
+                                    color="secondary"
+                                    onClick={reserveGift(gift.id)}
+                                    disabled={isReserving || Boolean(gift.reservedBy)}
+                                >
+                                    <SaveIcon />
+                                </Fab>
+                            </span>
+                        </Tooltip>
+                        <Tooltip
+                            title={
+                                gift.reservedByUser
+                                    ? "Poista varaus"
+                                    : "Et ole varannut tätä lahjaa"
+                            }
+                        >
+                            <span>
+                                <Fab
+                                    size="small"
+                                    color="primary"
+                                    onClick={removeReservation(gift.id)}
+                                    disabled={isReserving || !gift.reservedByUser}
+                                >
+                                    <RemoveIcon />
+                                </Fab>
+                            </span>
+                        </Tooltip>
+                    </div>
                 </div>
             </div>
         </Paper>
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     gift: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
     },
     buttons: {
+        minWidth: 104,
         "& > *": {
-            marginLeft: theme.spacing(1)
-        }
+            marginLeft: theme.spacing(1),
+        },
+    },
+    reservingText: {
+        marginLeft: 12,
     },
     reservedText: {
-        color: theme.palette.primary.main
-    }
+        color: theme.palette.primary.main,
+    },
 }));
 
 export default ReserveGiftItem;

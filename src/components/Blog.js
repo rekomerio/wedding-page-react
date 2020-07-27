@@ -145,6 +145,7 @@ const useStyles = makeStyles((theme) => ({
     },
     image: {
         width: "100%",
+        imageOrientation: "from-image",
     },
     text: {
         marginLeft: theme.spacing(4),

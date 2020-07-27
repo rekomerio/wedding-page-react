@@ -8,7 +8,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Tooltip from "@material-ui/core/Tooltip";
 import propTypes from "prop-types";
 
-const ConfirmOrDisagree = props => {
+const ConfirmOrDisagree = (props) => {
     const classes = useStyles();
     const {
         onConfirm,
@@ -18,7 +18,7 @@ const ConfirmOrDisagree = props => {
         label,
         text,
         confirmDisabled,
-        disagreeDisabled
+        disagreeDisabled,
     } = props;
 
     const confirm = () => {
@@ -67,25 +67,26 @@ const ConfirmOrDisagree = props => {
     );
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: 700,
         margin: "auto",
         "& > *": {
-            margin: theme.spacing(1)
-        }
+            margin: theme.spacing(1),
+        },
     },
     item: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
     },
     buttons: {
+        minWidth: 104,
         "& > *": {
-            marginLeft: theme.spacing(1)
-        }
-    }
+            marginLeft: theme.spacing(1),
+        },
+    },
 }));
 
 ConfirmOrDisagree.propTypes = {
@@ -96,7 +97,7 @@ ConfirmOrDisagree.propTypes = {
     label: propTypes.string,
     text: propTypes.string,
     confirmDisabled: propTypes.bool,
-    disagreeDisabled: propTypes.bool
+    disagreeDisabled: propTypes.bool,
 };
 
 ConfirmOrDisagree.defaultProps = {
@@ -105,7 +106,7 @@ ConfirmOrDisagree.defaultProps = {
     label: "",
     text: "",
     confirmDisabled: false,
-    disagreeDisabled: false
+    disagreeDisabled: false,
 };
 
 export default ConfirmOrDisagree;
