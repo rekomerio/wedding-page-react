@@ -13,6 +13,7 @@ import LoadingScreen from "./LoadingScreen";
 import Drawer from "./Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
+import Notifications from "./Notifications";
 
 const Nav = (props) => {
     const classes = useStyles();
@@ -44,6 +45,7 @@ const Nav = (props) => {
                     <Typography variant="h6" className={classes.title}>
                         {title}
                     </Typography>
+                    <Notifications isOpen />
                     <Button style={{ color: "white" }} onClick={signOut}>
                         <Tooltip title="Kirjaudu ulos">
                             <ExitToAppIcon />

@@ -36,6 +36,10 @@ const NotificationMenu = ({ notifications }) => {
             .catch((err) => console.error(err.message));
     };
 
+    const trimString = (str) => {
+        return str.length <= 20 ? str : str.slice(0, 20) + "...";
+    };
+
     return (
         <div>
             <IconButton
@@ -74,24 +78,17 @@ const NotificationMenu = ({ notifications }) => {
                                 <div className={classes.notificationItem}>
                                     <div
                                         className={classes.flex}
-                                        onClick={
-                                            href
-                                                ? () =>
-                                                      handleClearNotification(id, () =>
-                                                          history.push(href)
-                                                      )
-                                                : null
-                                        }
+                                        onClick={() => href && history.push(href)}
                                     >
                                         <Avatar alt="icon">
                                             <NotificationsIcon />
                                         </Avatar>
                                         <Box marginLeft={2}>
                                             <Typography variant="subtitle1">
-                                                {title || "Uusi ilmoitus"}
+                                                {title ? trimString(title) : "Uusi ilmoitus"}
                                             </Typography>
                                             <Typography variant="subtitle2">
-                                                {text || "Ilmoitus"}
+                                                {text ? trimString(text) : "Ilmoitus"}
                                             </Typography>
                                         </Box>
                                     </div>
@@ -102,13 +99,16 @@ const NotificationMenu = ({ notifications }) => {
                                         <ClearIcon />
                                     </IconButton>
                                 </div>
-                                <Box marginLeft={7}>
-                                    <Typography variant="caption">
-                                        {formatDistance(createdAt, new Date(), {
-                                            locale: fi,
-                                        }) + " sitten"}
-                                    </Typography>
-                                </Box>
+
+                                {createdAt && (
+                                    <Box marginLeft={7}>
+                                        <Typography variant="caption">
+                                            {formatDistance(createdAt, new Date(), {
+                                                locale: fi,
+                                            }) + " sitten"}
+                                        </Typography>
+                                    </Box>
+                                )}
                             </Paper>
                         ))
                     ) : (
@@ -128,6 +128,7 @@ const useStyles = makeStyles((theme) => ({
     menu: {
         width: 300,
         height: 350,
+        maxHeight: 400,
     },
     flex: {
         display: "flex",

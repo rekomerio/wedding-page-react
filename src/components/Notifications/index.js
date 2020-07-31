@@ -14,9 +14,11 @@ const Notifications = (props) => {
             .collection("notifications")
             .where("user", "==", user.uid)
             .where("isRead", "==", false)
+            .orderBy("createdAt", "desc")
             .onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     const data = change.doc.data();
+                    console.log(change.doc.id);
                     if (change.type === "added") {
                         setNotifications((state) => {
                             return [
