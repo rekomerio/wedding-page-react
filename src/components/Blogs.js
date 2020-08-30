@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import { setLoading } from "../redux/actions";
 import { firestore } from "../firebase";
 import Blog from "./Blog";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const isPageAtBottom = () => window.innerHeight + window.scrollY >= document.body.offsetHeight;
 
 const Blogs = (props) => {
     const classes = useStyles();
@@ -18,7 +20,6 @@ const Blogs = (props) => {
     }, []);
 
     useEffect(() => {
-        if (isLoading || blogs.length) return;
         console.log("loading first post...");
         props.setLoading(true);
         setIsLoading(true);
@@ -40,48 +41,55 @@ const Blogs = (props) => {
                 setIsLoading(false);
                 props.setLoading(false);
             });
-    }, [props]);
+    }, []);
+
+    const loadNextPost = useCallback(() => {
+        if (isLoading || nothingToLoad.current || !lastDoc.current) {
+            return;
+        }
+
+        setIsLoading(true);
+        props.setLoading(true);
+        console.log("Getting blog...");
+        firestore
+            .collection("blogs")
+            .orderBy("createdAt", "desc")
+            .startAfter(lastDoc.current.data().createdAt)
+            .limit(1)
+            .get()
+            .then((querySnapshot) => {
+                if (querySnapshot.docs.length > 0) {
+                    lastDoc.current = querySnapshot.docs[querySnapshot.docs.length - 1];
+                    const arr = [];
+                    querySnapshot.forEach((doc) => {
+                        arr.push({ ...doc.data(), id: doc.id });
+                    });
+                    setBlogs((state) => [...state, ...arr]);
+                } else {
+                    console.log("All loaded");
+                    nothingToLoad.current = true;
+                }
+            })
+            .catch((err) => console.log(err))
+            .finally(() => {
+                setIsLoading(false);
+                props.setLoading(false);
+            });
+    }, [isLoading]);
 
     useEffect(() => {
         const onScroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                if (isLoading || nothingToLoad.current || !lastDoc.current) {
-                    return;
-                }
-                setIsLoading(true);
-                props.setLoading(true);
-                console.log("Getting blog...");
-                firestore
-                    .collection("blogs")
-                    .orderBy("createdAt", "desc")
-                    .startAfter(lastDoc.current.data().createdAt)
-                    .limit(1)
-                    .get()
-                    .then((querySnapshot) => {
-                        if (querySnapshot.docs.length > 0) {
-                            lastDoc.current =
-                                querySnapshot.docs[querySnapshot.docs.length - 1];
-                            const arr = [];
-                            querySnapshot.forEach((doc) => {
-                                arr.push({ ...doc.data(), id: doc.id });
-                            });
-                            setBlogs([...blogs, ...arr]);
-                        } else {
-                            console.log("All loaded");
-                            nothingToLoad.current = true;
-                        }
-                    })
-                    .catch((err) => console.log(err))
-                    .finally(() => {
-                        setIsLoading(false);
-                        props.setLoading(false);
-                    });
-            }
+            if (isPageAtBottom()) loadNextPost();
         };
         document.addEventListener("scroll", onScroll);
 
         return () => document.removeEventListener("scroll", onScroll);
-    }, [isLoading, blogs, props]);
+    }, [isLoading, blogs, loadNextPost]);
+
+    // This effect is run in case some blog is so short, that scrolling is not possible
+    useEffect(() => {
+        if (isPageAtBottom()) loadNextPost();
+    }, [blogs, isLoading, loadNextPost]);
 
     return (
         <div className={classes.root}>
